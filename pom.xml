@@ -1,0 +1,231 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>kr.co.kalpa</groupId>
+  <artifactId>pcms</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Personal Contents Management System</name>
+  <url>http://www.kalpa.co.kr/pcms</url>
+
+  <properties>
+		<jetty.version>9.2.7.v20150116</jetty.version>
+<!-- 		<jetty.version>9.3.7.v20160115</jetty.version> -->
+	    <org.slf4j-version>1.6.2</org.slf4j-version>
+	    <maven.war.plugin.version>2.6</maven.war.plugin.version>
+  </properties>
+	<repositories>
+		<repository>
+			<id>mesir-repo</id>
+			<url>http://mesir.googlecode.com/svn/trunk/mavenrepo</url>
+		</repository>
+	</repositories>     
+  <dependencies>
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.11</version>
+		<scope>test</scope>
+	</dependency>
+<!-- 	<dependency> -->
+<!-- 		<groupId>kr.co.kalpa.cms</groupId> -->
+<!-- 		<artifactId>cms-mvc</artifactId> -->
+<!-- 		<version>1.0.0</version> -->
+<!-- 	</dependency> -->
+	<dependency>
+	  <groupId>kr.co.kalpa.cms</groupId>
+	  <artifactId>cms-latte</artifactId>
+	  <version>1.0.0</version>
+	</dependency>
+	<!-- 	Cms-Mvc -->
+	<!-- 	메일보내기 -->
+	<dependency>
+		<groupId>javax.mail</groupId>
+		<artifactId>mail</artifactId>
+		<version>1.4.7</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.jdom</groupId>
+		<artifactId>jdom2</artifactId>
+		<version>2.0.5</version>
+	</dependency>
+                
+	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-io</artifactId>
+		<version>1.3.2</version>
+	</dependency>
+	
+	<dependency>
+	  <groupId>org.apache.commons</groupId>
+	  <artifactId>commons-lang3</artifactId>
+	  <version>3.1</version>
+    </dependency>  	
+	
+	<dependency>
+		<groupId>commons-dbcp</groupId>
+		<artifactId>commons-dbcp</artifactId>
+		<version>1.2.2</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-compress</artifactId>
+		<version>1.8</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>commons-codec</groupId>
+		<artifactId>commons-codec</artifactId>
+		<version>1.10</version>
+	</dependency>			
+	<!-- 		file upload -->
+	<dependency>
+		<groupId>commons-fileupload</groupId>
+		<artifactId>commons-fileupload</artifactId>
+		<version>1.2.1</version>
+	</dependency>
+
+	 <!--  Gson: Java to Json conversion -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.2.2</version>
+      <scope>compile</scope>
+    </dependency>	
+	
+	<!-- JETTY DEPENDENCIES -->
+	<dependency>
+		<groupId>org.eclipse.jetty</groupId>
+		<artifactId>jetty-server</artifactId>
+		<version>${jetty.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.eclipse.jetty</groupId>
+		<artifactId>jetty-servlet</artifactId>
+		<version>${jetty.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.eclipse.jetty</groupId>
+		<artifactId>jetty-webapp</artifactId>
+		<version>${jetty.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.eclipse.jetty</groupId>
+		<artifactId>jetty-servlets</artifactId>
+		<version>${jetty.version}</version>
+	</dependency>
+	<!-- JSP and JSTL SUPPORT -->
+	<dependency>
+		<groupId>org.eclipse.jetty</groupId>
+		<artifactId>jetty-jsp</artifactId>
+		<version>${jetty.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>jstl</artifactId>
+		<version>1.2</version>
+		<scope>provided</scope>
+	</dependency>
+<!-- 	<dependency> -->
+<!-- 		<groupId>org.apache.httpcomponents</groupId> -->
+<!-- 		<artifactId>httpcore</artifactId> -->
+<!-- 		<version>4.2</version> -->
+<!-- 	</dependency>	 -->
+<!-- 	<dependency> -->
+<!-- 		<groupId>tomcat</groupId> -->
+<!-- 		<artifactId>jasper-runtime</artifactId> -->
+<!-- 		<version>5.5.23</version> -->
+<!-- 	</dependency> -->
+
+<!-- 	데이터베이스들	 -->
+		<dependency>
+			<groupId>com.oracle</groupId>
+		  	<artifactId>ojdbc14</artifactId>
+		  	<version>10.2.0.4.0</version>
+		</dependency>
+		
+<!-- 		<dependency> -->
+<!-- 			<groupId>mysql</groupId> -->
+<!-- 			<artifactId>mysql-connector-java</artifactId> -->
+<!-- 			<version>5.1.17</version> -->
+<!-- 			<type>jar</type> -->
+<!-- 			<scope>compile</scope> -->
+<!-- 		</dependency> -->
+		
+<!-- 		<dependency> -->
+<!--   			<groupId>com.microsoft.sqlserver</groupId> -->
+<!--   			<artifactId>sqljdbc4</artifactId> -->
+<!--   			<version>4.0</version> -->
+<!-- 		</dependency> -->
+
+	<!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${org.slf4j-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${org.slf4j-version}</version>
+    </dependency>
+	<dependency>
+		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+		<version>1.2.15</version>
+		<exclusions>
+			<exclusion>
+				<groupId>javax.mail</groupId>
+				<artifactId>mail</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>javax.jms</groupId>
+				<artifactId>jms</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>com.sun.jdmk</groupId>
+				<artifactId>jmxtools</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>com.sun.jmx</groupId>
+				<artifactId>jmxri</artifactId>
+			</exclusion>
+		</exclusions>
+		<scope>runtime</scope>
+	</dependency>   
+  </dependencies>
+
+	<build>
+		<finalName>pcms</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${maven.war.plugin.version}</version>
+				<configuration>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+	                <failOnMissingWebXml>false</failOnMissingWebXml>
+					<archive>
+						<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>kr.co.kalpa.Main</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>			
+		</plugins>
+	</build>
+	<description>
+	개인용 컨텐츠 관리 시스템
+	1. 자료들을 정리한다. 일기, 독후감, 전문지식 등등... 게시판 생성
+	2. 자신의 컴퓨터를 관리한다. 파일및디렉토리 이름변경
+	</description>
+</project>

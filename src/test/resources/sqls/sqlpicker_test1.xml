@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqlPicker>
+	<alias name="Person">kr.dcos.common.utils.sqlpicker.Person</alias>
+	<alias name="Group">kr.dcos.common.utils.sqlpicker.Group</alias>
+	<alias name="User">kr.dcos.common.utils.sqlpicker.User</alias>
+	<sql id="p1">
+		insert into gamdok (kname,ename,sdesc,oname) value (#kname#,#ename#,'$desc$','@gname@')
+	</sql>
+	<ref id="gname">
+	<![CDATA[
+	<@ echo "abc"; @>
+	]]>  
+	</ref>
+	<sql id="aaa0">
+		select * from table  
+	</sql>	
+	<sql id="aaa1" method="Batis">
+		select * from table where name=#name#;
+	</sql>
+	<sql id="aaa2" method="Latte">
+		<![CDATA[
+			select * from table 
+			<@ 
+				echo " where name='Kim' "; 
+			@>
+		]]>  
+	</sql>	
+	<sql id="aaa3" method="Batis">
+		<![CDATA[
+		select * from table $where1$
+		 ]]>
+	</sql>	
+	<ref id="where1">
+	<![CDATA[
+		<@
+		echoln "where name = " + s_name + " and age = " + age;
+		@>
+	]]>
+	</ref>
+	<sql id="aaa4" method="Batis">
+		<![CDATA[
+		select * from table @where@
+		 ]]>
+	</sql>		
+ 	<ref id="where"> 
+ 	  <![CDATA[ 
+ 	  	<@ 
+ 	    	str = " 1=1 "; 
+ 	    	if !isEmpty(name) begin
+ 	    		str +=  " and name like '%" + name + "%'";   
+ 	    	end; 
+ 	    	if !isEmpty(age) begin 
+ 	    		if str.length() > 0 begin str += " and "; end;
+ 	    		str += " age = " + age; 
+ 	    	end; 
+	    	
+ 	    	if str.length() > 0  begin 
+ 	    	   str = "where " + str; 
+ 	    	end; 
+ 	    	echo str; 
+ 	    @> 
+ 	    order by name
+ 	  ]]> 
+ 	</ref>		
+	<sql id="bbb" method="Batis">
+	  	insert into table1(name,age) values (#name#, #age#);
+	</sql>
+	<sql id="ccc" type="Latte">
+	 <![CDATA[
+ 		select * 
+ 		from person 
+ 		where 1=1 
+ 		and name='#name#' 
+ 		and #age# < 25 
+      ]]> 
+	</sql>
+	<sql id="ddd" method="Batis">
+	  	insert into table1(name,age) values (#name#,#age#)
+	</sql>
+	<sql id="eee">
+	  	insert into table1(name,name) values (#name#,#name#)
+	</sql>
+	<sql id="aaa5" method="Batis">
+		<![CDATA[
+		select * from table @where2@
+		 ]]>
+	</sql>		
+	<ref id="where2">
+		 <![CDATA[
+		 	where 1=1 
+		 		<@ 
+		 		if !isEmpty(name) begin echo " and name="+s_name; end;
+				if !isEmpty(age) begin echo " and age > "+age; end;		 	
+				if !isEmpty(score) begin echo " and score="+toString(score); end;	
+				if !isEmpty(jobs) begin
+				    job = "";
+				    for i=0 to jobs.lastIndex() begin
+				    	job += "'" + jobs[i] + "',";
+				    end;
+				    if job.length()>0 begin
+				       job = job.substring(0,job.length()-1);
+				    end;
+		 			echo " and job in (" + job +")";
+		 		end;
+		 		if !isEmpty(goods) begin
+		 			echo " and goods in (" + goods.join(",","'") + ")";
+		 		end;			
+				@>
+			order by name	
+		 ]]>
+	</ref>		
+
+</SqlPicker>

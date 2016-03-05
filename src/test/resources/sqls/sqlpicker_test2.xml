@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqlPicker>
+	
+	<sql id="select.table1" method="Batis">
+		select * from table1 where a = #name#;
+	</sql>
+	<sql id="insert.person" method="Batis">
+		insert into table1(name,age) values ('#name#', #age#);
+	</sql>
+	<sql id="select.user" method="Batis">
+	 <![CDATA[
+		select *
+		from person a , group b
+		where 
+		a.id = b.id 
+		and a.name='#person.name#'
+		and a.age < #person.age#
+		and b.name = '#group.name#' 
+     ]]>
+	</sql>	
+</SqlPicker>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Cms-Suhaeng>
+	<classes>
+		<class alias="kalpa,dcos" session-check="N">kr.dcos.common.controller.Nogada</class>
+	</classes>
+</Cms-Suhaeng>

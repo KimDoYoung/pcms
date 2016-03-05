@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 테스트용 DBMS들 -->
+<databases>
+	<!-- 	오라클 Oracle -->
+	<database id="oracle">
+		<basic-info>
+			<url>jdbc:oracle:thin:@KimDoYoung-PC:1521:XE</url>
+			<userId>kdy</userId>
+			<password>kdy987</password>
+		</basic-info>
+		<connection-pool-info>
+			<driver>oracle.jdbc.driver.OracleDriver</driver>
+			<minConnection>10</minConnection>
+			<maxConnectionSize>100</maxConnectionSize>
+			<loginTimeout>10</loginTimeout>
+			<maxWait>5000</maxWait>
+		</connection-pool-info>
+		<sql-files>
+			<file>/sqls/oracle.xml</file>
+		</sql-files>
+	</database>	
+</databases>

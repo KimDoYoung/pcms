@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqlPicker>
+	<sql id="select1">
+		select * from person order by name
+	</sql>
+	<sql id="select2">
+		select * from person where name = #name# order by name
+	</sql>
+</SqlPicker>

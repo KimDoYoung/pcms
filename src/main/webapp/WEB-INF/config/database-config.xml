@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databases>
+	<!-- 	MySql CMS -->
+	<database id="wansync">
+		<basic-info>
+			<url>jdbc:mysql://220.76.203.236:3306/wansync</url>
+			<userId>ws</userId>
+			<password>ws123</password>
+		</basic-info>
+		<connection-pool-info>
+			<driver>com.mysql.jdbc.Driver</driver>
+			<minConnection>10</minConnection>
+			<maxConnectionSize>100</maxConnectionSize>
+			<loginTimeout>10</loginTimeout>
+			<maxWait>5000</maxWait>
+		</connection-pool-info>
+		<sql-files>
+			<file>/sqls/wansync/sqls.xml</file>
+			<file>/sqls/wansync/graph.xml</file>
+		</sql-files>
+	</database>		
+</databases>

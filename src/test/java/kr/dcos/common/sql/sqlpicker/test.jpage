@@ -1,0 +1,8 @@
+234/234 (int) 1
+"abc" + 230(java.lang.String) abc230
+double d = 3.14;
+System.out.println(d); (No explicit return value)
+
+CmsLatte latte = new CmsLatte();
+String s = latte.createPage("echo isDefined(abc);");
+System.out.println(s);
