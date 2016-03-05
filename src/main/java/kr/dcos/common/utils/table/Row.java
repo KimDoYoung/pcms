@@ -367,8 +367,10 @@ public class Row {
 	}
 
 	/**
-	 * valueString을 delimeter로 잘라서 넣는다. 
-	 * valueString은 컬럼의 순서대로 값이 존재해야한다.
+	 * valueString을 delimeter로 잘라서 넣는다. <br>
+	 * 값들은 trim 되어서 들어간다
+	 * valueString은 컬럼의 순서대로 값이 존재해야한다.<br>
+	 * 
 	 * @param valueString
 	 * @param delimeter
 	 * @throws TableException 

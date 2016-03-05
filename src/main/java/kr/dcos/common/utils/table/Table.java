@@ -766,18 +766,16 @@ public class Table {
 		Table newTable = new Table();
 		for(Column col : this.getColumns()){
 			Column newCol = col.copyTo();
-//			newCol.setName(name +"."+ newCol.getName());
 			newCol.setName("a."+ newCol.getName());
 			newTable.appendColumn(newCol);
 		}	
 		for(Column col : t2.getColumns()){
 			Column newCol = col.copyTo();
-//			newCol.setName(t2.getName() + "." + newCol.getName());
 			newCol.setName("b." + newCol.getName());
 			newCol.setPrimaryKey(false);
 			newTable.appendColumn(newCol);
 		}
-		System.out.println(newTable.toString());
+//		System.out.println(newTable.toString());
 		String[] values = new String[joinFields.length];
 		for (Row row : getRows()){
 			for (int i = 0; i < joinFields.length; i++) {
@@ -1218,6 +1216,4 @@ public class Table {
 		}
 		return count;
 	}
-
-
 }
