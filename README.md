@@ -26,9 +26,9 @@ public class SessionInfo extends HashMap<String,Object> implements ISessionInfo 
 }
 
 # webapp 하위에
-common 폴더 생성
-login.jsp, cms_error.jsp를 작성
-폴더들을 생성
+common 폴더 생성하고 그 안에 login.jsp, cms_error.jsp를 작성
+common 폴더 안에 아래 폴더들을 생성
+
 * css
 * js
 * images
