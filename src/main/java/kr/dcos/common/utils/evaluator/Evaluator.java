@@ -40,7 +40,10 @@ public class Evaluator {
 			return "Token name=[" + name + "], type=[" + type + "], value=[" + value + "], icp=[" + icp + "], isp=["+isp+"]";
 		}
 	}
-	private enum TOKEN_TYPE { NUMBER_VALUE, STRING_VALUE, BOOLEAN_VALUE,
+	//TODO NUMBER_VALUE -> INTEGER_VALUE와 DOUBLE_VALUE로 나눌것
+	//DATE_VALUE 추가할 것
+	private enum TOKEN_TYPE { NUMBER_VALUE, 
+		STRING_VALUE, BOOLEAN_VALUE,
 		OP_PLUS, OP_MINUS, OP_DIVIDE, OP_MULTIPLE, OP_MOD, OP_BIGGER, OP_LESSTHAN, OP_BIGGER_EQUAL, OP_LESS_EQUAL,
 		OP_EQUAL, OP_NOT_EQUAL,  OP_AND, OP_OR, OP_NOT, SP_LPAREN, SP_RPAREN 
 	}
