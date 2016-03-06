@@ -127,14 +127,14 @@ public class Table {
 	}
 
 	/**
-	 * 
+	 * map이 가지고 있는 데이터로 row를 채
 	 * @param row
 	 * @param map
 	 * @throws TableException
 	 */
 	private void fillRow(Row row, Map<String, Object> map) throws TableException {
 		for (Entry<String, Object> entry : map.entrySet()) {
-			String name = entry.getKey().toString();
+			String name = entry.getKey();
 			Object value = entry.getValue();
 			if (columnHeader.containsKey(name) == false) {//column이 없으면 추가한다
 				appendColumn(new Column(name, getType(value), 0, false, 	false));
@@ -318,8 +318,8 @@ public class Table {
 
 	/**
 	 * 테이블 t2의 모든 레코드들을 추가한다.<br>
-	 * t2에는 있고 t1에 없는 컬럼들은 생성된다.
-	 * t2에 t1의 pk가 없을 경우
+	 * t2에는 있고 t1에 없는 컬럼들은 생성된다.<br>
+	 * t2에 t1의 pk가 없을 경우<br>
 	 * 주의)pk값이 일치하는 레코드는 나중에 나오는 레코드의 값으로 치환된다.<br>
 	 * @param t2
 	 * @throws TableException
@@ -355,10 +355,6 @@ public class Table {
 	public Set<String> asSet(String columnName, String whereCondition) throws TableException {
 		String[] array = distinct(columnName, whereCondition);
 		return new HashSet<String>( Arrays.asList(array));
-	}
-
-	public int columnCount() {
-		return columnHeader.size();
 	}
 
 	/**
@@ -429,6 +425,7 @@ public class Table {
 
 	/**
 	 * 똑같은 스키마의 테이블을 만들고 데이터를 복사한다
+	 * 
 	 * @return 복사된 새로운 테이블
 	 * @throws TableException 
 	 */
@@ -485,8 +482,8 @@ public class Table {
 	}
 
 	/**
-	 * 컬럼명으로 컬럼을 찾아서 리턴한다. 
-	 * 찾지 못했을 경우 null을 리턴한다
+	 * 컬럼명으로 컬럼을 찾아서 리턴한다. <br> 
+	 * 찾지 못했을 경우 null을 리턴한다<br>
 	 * 
 	 * @param columnName
 	 * @return
@@ -508,8 +505,8 @@ public class Table {
 	}
 
 	/**
-	 * 컬럼명으로 컬럼을 찾아서 리턴한다. 
-	 * 찾지 못했을 경우 빈문자열을 리턴한다
+	 * 컬럼명으로 컬럼을 찾아서 리턴한다. <br>
+	 * 찾지 못했을 경우 빈문자열을 리턴한다.<br>
 	 *  
 	 * @param columnIndex
 	 * @return
@@ -531,8 +528,9 @@ public class Table {
 	}
 
 	/**
-	 * column의 갯수를 리턴한다
-	 * columnCount와 같은 역활을 한다
+	 * column의 갯수를 리턴한다<br>
+	 * columnCount와 같은 역활을 한다<br>
+	 * 
 	 * @return
 	 */
 	public int getColumnsSize() {
@@ -548,27 +546,15 @@ public class Table {
 	}
 
 	/**
-	 * 
+	 * rowIndex에 해당하는 row를 리턴한다. <br>
+	 * rowIndex가 해당하지 않으면 null을 리턴한다. <br>  
 	 * @param rowIndex
-	 * @return
+	 * @return 
 	 */
 	public Row getRow(int rowIndex) {
 		if (rowIndex >= 0 && rowIndex < rowList.size()) {
 			List<Row> l = new ArrayList<Row>(rowList.values());
 			return l.get(rowIndex);
-		}
-		return null;
-	}
-
-	/**
-	 * 
-	 * @param pkValue
-	 * @return
-	 */
-	public Map<String, Object> getRowAsMap(String pkValue) {
-		Row row = findRow(pkValue);
-		if (row != null) {
-			return row.toMap();
 		}
 		return null;
 	}
@@ -670,10 +656,10 @@ public class Table {
 		}
 		if (value instanceof String) {
 			return DataType.STRING;
-		} else if (value instanceof Integer || value instanceof Short
-				|| value instanceof Long || value instanceof Double
-				|| value instanceof BigInteger) {
-			return DataType.NUMBER;
+		} else if (value instanceof Integer || value instanceof Short){
+			return DataType.INTEGER;
+		}else if(value instanceof Long || value instanceof Double || value instanceof BigInteger) {
+			return DataType.DOUBLE;
 		} else if (value instanceof Date) {
 			return DataType.DATE;
 		} else if (value instanceof Table) {
@@ -993,7 +979,7 @@ public class Table {
 		if (pkList != null && pkList.size() > 0) {
 			throw new TableException("pk column is already defined");
 		}
-		Column pkColumn = new Column("RowNum", DataType.NUMBER, 0, true, true);
+		Column pkColumn = new Column("RowNum", DataType.INTEGER, 0, true, true);
 		pkColumn.setAutoIncrement();
 		appendColumn(pkColumn);
 	}

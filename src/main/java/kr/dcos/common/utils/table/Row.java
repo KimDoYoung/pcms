@@ -1,9 +1,13 @@
 package kr.dcos.common.utils.table;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -42,12 +46,30 @@ public class Row {
 		}
 	}
 
+	/**
+	 * 현재 row를 가지고 있는 Table을 리턴한다
+ 	 * @return
+	 */
+	public Table getMyParentTable() {
+		return myParentTable;
+	}
+	/**
+	 * 가지고 있는  컬럼의 갯수를 리턴한다.
+	 * 
+	 * @return int형으로 컬럼의 갯
+	 */
 	public int columnSize() {
 		return myParentTable.getColumnsSize();
 	}
 
+	/**
+	 * columnName에 해당하는 값을 Double형으로 리턴한다.
+	 * 
+	 * @param columnName
+	 * @return
+	 */
 	public Double getDouble(String columnName) {
-		return getDouble(columnName,null);
+		return getDouble(columnName, null);
 	}
 	public Double getDouble(String columnName, Double defaultValue) {
 		Object value = getObject(columnName);
@@ -61,22 +83,73 @@ public class Row {
 			return Double.parseDouble(s);
 		}
 	}
-	public int getInteger(String name) throws TableException {
-		String value = getString(name);
-		try{
-			if(value.equals("0.0")) return 0;
-			return Double.valueOf(value).intValue();
-		}catch(NumberFormatException e){
-			throw new TableException(e.getMessage());
+	public Integer getInteger(String columnName) throws TableException {
+		Object value = getObject(columnName);
+		if(value instanceof Integer) return (Integer)value;
+		else if(value instanceof Double ) {
+			Double d = (Double)value;
+			return d.intValue();
+		}else if(value instanceof String){
+			try {
+				if (value.equals("0.0"))
+					return 0;
+				return Double.valueOf(value.toString()).intValue();
+			} catch (NumberFormatException e) {
+				return null;
+			}
 		}
+		return null;
 	}
-	public int getInteger(String name, int defaultIntValue) {
+	public Integer getInteger(String name, int defaultIntValue) {
 		try {
 			String value = getString(name);
 			return Integer.parseInt(value);
 		} catch (NumberFormatException e) {
 			return defaultIntValue;
 		}
+	}
+	/**
+	 * columnName의 값을 Date형으로 리턴한다. <br>
+	 * 저장되어 있는 데이터가 Date형이면 그대로 리턴한다.<br>
+	 * 저장되어 있는 데이터가 문자열이고 다음과 같은 포맷이면 date형으로 변경하여 리턴한다.<br>
+	 * 1. yyyyMMdd<br>
+	 * 2. yyyy-MM-dd<br>
+	 * 3. yyyy-MM-dd HH:mm:ss<br>
+	 * 저장되어 있는 형태가 String, Date가 아니라면  null을 리턴한다.<br>
+	 * 
+	 * @param columnName
+	 * @return
+	 */
+	public Date getDate(String columnName) {
+
+		Object o = getObject(columnName);
+		if( o instanceof Date ){
+			return (Date)o;
+		}else if(o instanceof String) {
+			return stringToDate(o.toString());
+		}else {
+			return null;
+		}
+	}
+	private Date stringToDate(String s) {
+		SimpleDateFormat format = null;
+		if (s.matches("\\d{4}-\\d{2}-\\d{2}")){
+			format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+		}else if(s.matches("\\d{8}")){
+			format = new SimpleDateFormat("yyyyMMdd" , Locale.getDefault());
+		}else if(s.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")){
+			format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+		}
+		Date date = null;
+		if(format != null) {
+			try {
+				date =  format.parse(s);
+			}
+			catch(ParseException e){
+				date = null;
+			}
+		}
+		return date;
 	}
 	/**
 	 * name필드에 저장된 값을 Long형으로 리턴한다.
@@ -112,9 +185,7 @@ public class Row {
 			return defaultValue;
 		}
 	}
-	public Table getMyParentTable() {
-		return myParentTable;
-	}	
+
 	/**
 	 * column순으로 값들을 가져와서 Collection으로 만들어서 리턴한다.
 	 * @return
@@ -143,7 +214,7 @@ public class Row {
 		String name = myParentTable.getColumnName(columnIndex);
 		return getObject(name);
 	}
-	
+
 	/**
 	 * pkString을 리턴한다
 	 * @return String
@@ -253,7 +324,7 @@ public class Row {
 	 * map으로 부터 데이터를 가져와서 row를 채운다.<br>
 	 * ifFieldValueIsNull 이 true인 경우 row의 각 필드값이 null인 경우에만 넣는다<br>
 	 * ifFieldValueIsNull 이 false이면 row값이 이미 존재하여도 값을 map의 값으로 치환한다<br>
-	 * @{link KedTable}  
+	 * @{link Table}  <br>
 	 * @param map
 	 * @param ifFieldValueIsNull
 	 * @throws TableException 
@@ -280,8 +351,9 @@ public class Row {
 	}
 
 	/**
-	 * map의 키를 column명으로 하여  값을 채운다
-	 * rownum은 배제한다
+	 * map의 키를 column명으로 하여  값을 채운다<br>
+	 * rownum은 배제한다<br>
+	 * 
 	 * @param map
 	 * @throws TableException 
 	 * @throws TableException 
@@ -318,6 +390,7 @@ public class Row {
 	 * 컬럼명 name에 해당하는 컬럼에 값을 대입한다<br>
 	 * 컬럼명 name이 존재하지않는다면 컬럼을 생성하고 값을 넣는다.<br>
 	 * 또한 컬럼명이 다른 이름 matchFunction이라면 원래의 컬럼명에 넣는다<br>
+	 * 
 	 * @param name
 	 * @param value
 	 * @param dataType
@@ -328,17 +401,22 @@ public class Row {
 		//컬럼이 없으면 추가한다.
 		Column nc = myParentTable.getColumn(name);
 		if(nc == null){
-//			if(myParentTable.getColumn(name) == null){
 			nc = new Column(name,dataType,0,false,false);
 			myParentTable.appendColumn(nc);
 		}
 		//있으면 그냥 넣는다.
 		Object object = value;
 		if(value != null && value instanceof String && dataType != DataType.STRING){
-			if(dataType == DataType.NUMBER ){				
+			if(dataType == DataType.DOUBLE ){				
 				object = Double.parseDouble(value.toString());
+			}else if(dataType == DataType.INTEGER){
+				object = Integer.parseInt(value.toString());
+			}else if(dataType == DataType.DATE){
+				object = stringToDate(value.toString());
+				if(object == null) {
+					throw new TableException(value.toString() + " is not valid date format");
+				}
 			}
-			//TODO 좀더 정밀하게 수정할 것
 		}
 		map.put(nc.getName().toLowerCase(), object);
 		return this;
@@ -346,6 +424,7 @@ public class Row {
 
 	/**
 	 * columnIndex에 해당하는 컬럼에 값이 null일 경우에만 인자로 받은 값 value를 넣는다.
+	 * 
 	 * @param columnIndex
 	 * @param value
 	 * @throws TableException
@@ -368,7 +447,8 @@ public class Row {
 
 	/**
 	 * valueString을 delimeter로 잘라서 넣는다. <br>
-	 * 값들은 trim 되어서 들어간다
+	 * 값들은 trim 되어서 들어간다<br>
+	 * YY-MM-DD다
 	 * valueString은 컬럼의 순서대로 값이 존재해야한다.<br>
 	 * 
 	 * @param valueString
@@ -376,7 +456,7 @@ public class Row {
 	 * @throws TableException 
 	 */
 	public void setValues(String valueString, String delimeter) throws TableException {
-		String[] values = valueString.split("\\s*["+delimeter+"]\\s*", -1);
+		String[] values = valueString.trim().split("\\s*["+delimeter+"]\\s*", -1);
 		for (int i = 0; i < values.length; i++) {
 			Column.DataType dataType = myParentTable.getColumn(i).getDataType();
 			if(myParentTable.getColumn(0).getName().equals("rownum")){

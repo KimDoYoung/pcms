@@ -220,9 +220,54 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>			
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<compilerArgument>-Xlint:all</compilerArgument>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+	        <plugin>
+	            <groupId>org.codehaus.mojo</groupId>
+	            <artifactId>findbugs-maven-plugin</artifactId>
+	            <version>3.0.1</version>
+	        </plugin>						
 		</plugins>
 	</build>
+	<reporting>
+	    <plugins>
+	<!--     	findbugs -->
+	       <plugin>
+	            <groupId>org.codehaus.mojo</groupId>
+	            <artifactId>findbugs-maven-plugin</artifactId>
+	            <version>3.0.1</version>
+	        </plugin>
+	<!--         PMD -->
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-pmd-plugin</artifactId>
+	            <version>3.2</version>
+	            <configuration>
+	                <linkXref>true</linkXref>
+	                <rulesets>
+	                    <ruleset>file:///${project.basedir}/my-pmd-ruleset.xml</ruleset>
+	                </rulesets>
+	            </configuration>
+	        </plugin>
+	        <plugin>
+	            <groupId>org.codehaus.mojo</groupId>
+	            <artifactId>cobertura-maven-plugin</artifactId>
+	            <version>2.6</version>
+	        </plugin>        
+	    </plugins>
+	</reporting>	
 	<description>
 	개인용 컨텐츠 관리 시스템
 	1. 자료들을 정리한다. 일기, 독후감, 전문지식 등등... 게시판 생성

@@ -1,17 +1,19 @@
 package kr.dcos.common.utils.table;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import kr.dcos.common.utils.evaluator.Evaluator;
 import kr.dcos.common.utils.table.Column.DataType;
 
 public class TableTest {
 	private Table inputTable = new Table();
-	private Evaluator niceRowEvalator ;
 
 	@Before
 	public void setUp() throws Exception {
@@ -55,12 +57,14 @@ public class TableTest {
 		assertEquals(inputTable.getRowSize(), 5);
 		
 		//데이터 가져오기
-		assertEquals(inputTable.getRow(0).getInteger("height"), 160);
-		assertEquals(inputTable.getRow(4).getInteger("height"), 125);
+		assertTrue(inputTable.getRow(0).getInteger("height") == 160);
+		assertTrue(inputTable.getRow(4).getInteger("height") == 125);
 		assertEquals(inputTable.getRow(4).getString("score"), "93.5");
 		assertTrue(inputTable.getRow(4).getDouble("score") < 93.51);
 		
-		assertEquals(inputTable.getRow(4).getDate("upt_dt"), "93.5");
+		//data type 가져오기.
+		Date date = inputTable.getRow(4).getDate("upt_dt");
+		assertNotNull(date);
+		
 	}
-
 }

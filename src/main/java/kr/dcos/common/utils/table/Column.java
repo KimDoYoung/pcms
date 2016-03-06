@@ -17,7 +17,7 @@ public class Column {
 //	public enum DataType { UNKNOWN,STRING,NUMBER,DATE,KED_TABLE };
 	//TODO NUMBER을 없앨것
 	public enum DataType {
-		UNKNOWN, STRING, INTEGER, DOUBLE, DATE, KED_TABLE, NUMBER
+		UNKNOWN, STRING, INTEGER, DOUBLE, DATE, KED_TABLE//, NUMBER
 	};
 	
 	private String name;
@@ -67,10 +67,12 @@ public class Column {
 
 	private DataType getDataType(String s) {
 		if(s.equalsIgnoreCase("i") || s.equalsIgnoreCase("int") || s.equalsIgnoreCase("integer")){
-			return DataType.NUMBER;
+			return DataType.INTEGER;
+		}else if(s.equals("d") || s.equals("double") || s.equals("number")) {
+			return DataType.DOUBLE;
 		}else if(s.equalsIgnoreCase("s") || s.equalsIgnoreCase("string")) {
 			return DataType.STRING;
-		}else if(s.equalsIgnoreCase("d") || s.equalsIgnoreCase("date")) {
+		}else if( s.equalsIgnoreCase("date")) {
 			return DataType.DATE;
 		}
 		return null;
