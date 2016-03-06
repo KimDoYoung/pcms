@@ -65,6 +65,11 @@ public class TableTest {
 		//data type 가져오기.
 		Date date = inputTable.getRow(4).getDate("upt_dt");
 		assertNotNull(date);
+	}
+
+	@Test
+	public void testBasic2() throws TableException {
+		assertTrue(true);
 		
 	}
 }
