@@ -1,5 +1,5 @@
--- for junit testing 
--- person have 5 rows
+-- junit 단위 테스트용
+-- person은 5개의 row를 가진다
 DROP TABLE person;
 CREATE TABLE person (
        ID       		CHAR(2)       NOT NULL,

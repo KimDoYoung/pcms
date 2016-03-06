@@ -53,7 +53,11 @@ public class DatabaseManager {
 	}
 	private DatabaseManager(){
 		dbMap = new HashMap<String, Database>();
-		//loadConfig(dbConfigXml);
+		try {
+			loadConfig(dbConfigXml);
+		} catch (SqlExecutorException e) {
+			logger.error(dbConfigXml + " loading fail");
+		}
 	}
 	/**
 	 * database-config.xml을 읽어서 database 객체의 property들을 채운다. <br>

@@ -118,7 +118,12 @@ public class SqlExecuter {
 
 	public JdbcTable selectWithStatement(String sqlId, SqlParam param) throws SqlExecutorException, TableException, SqlPickerException {
 		
-		String sql = sqlPicker.sqlString(sqlId, param.getMap());
+		String sql = null;
+		if(param == null) {
+			sql = sqlPicker.sqlString(sqlId, null);
+		}else{
+			sql = sqlPicker.sqlString(sqlId, param.getMap());
+		}
 		logger.debug(sqlId+":["+sql+"]");
 		return selectDirect(sql);
 	}

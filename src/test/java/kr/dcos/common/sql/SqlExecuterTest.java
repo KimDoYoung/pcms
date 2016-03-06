@@ -120,8 +120,8 @@ public class SqlExecuterTest {
 //		}
 		//String s = table.getValue(0,"id");
 	}
-	@Test
-	public void transactionTest1(){
+//	@Test
+//	public void transactionTest1(){
 		
 //		DbTransactionInfo tranInfo = new DbTransactionInfo();
 //		Map<String,Object> map = new HashMap<String,Object>();
@@ -136,13 +136,13 @@ public class SqlExecuterTest {
 //		} catch (SqlExecutorException e) {
 //			logger.error(e.getMessage());
 //		}
-	}
+//	}
 	/**
 	 * 
 	 * SqlParam을 넘긴다.
 	 */
-	@Test
-	public void transactionTest2(){
+//	@Test
+//	public void transactionTest2(){
 		
 //		DbTransactionInfo tranInfo = new DbTransactionInfo();
 //		
@@ -159,13 +159,13 @@ public class SqlExecuterTest {
 //		} catch (SqlExecutorException e) {
 //			logger.error(e.getMessage());
 //		}
-	}
+//	}
 	/**
 	 * 
 	 * POJO 타입의 class를 넘긴다.
 	 */
-	@Test
-	public void transactionTest3(){
+//	@Test
+//	public void transactionTest3(){
 		
 //		DbTransactionInfo tranInfo = new DbTransactionInfo();
 //		
@@ -184,14 +184,14 @@ public class SqlExecuterTest {
 //		}
 
 
-	}
+//	}
 	/**
 	 * 
 	 * xml에서 sqlId로 찾아서 sql을 만드는 것과
 	 * 직접 sql를 집어 넣어서 tranInfo를 채운 후 돌리는 것
 	 */
-	@Test
-	public void transactionTest4(){
+//	@Test
+//	public void transactionTest4(){
 		
 //		DbTransactionInfo tranInfo = new DbTransactionInfo();
 //		
@@ -210,5 +210,5 @@ public class SqlExecuterTest {
 //		}
 
 
-	}
+//	}
 }
