@@ -532,7 +532,8 @@ public class Evaluator {
 		}else if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE){
 			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"=="+t2.name, (Double)t2.value ==  ((Integer)t1.value * 1.0) ? "true" : "false");
 		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE){
-			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"=="+t2.name, (double)t2.value ==  (double)t1.value ? "true" : "false");
+			double d1 = (Double)t1.value, d2 = (Double)t2.value; 
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"=="+t2.name, Double.compare(d1, d2) == 0 ? "true" : "false");
 		}else if(t1.type == TOKEN_TYPE.STRING_VALUE && t2.type == TOKEN_TYPE.STRING_VALUE  ) { // s == s
 			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"=="+t2.name, t2.value.equals(t1.value) ? "true" : "false");
 		}else{
