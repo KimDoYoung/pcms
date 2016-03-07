@@ -22,24 +22,24 @@ public class EvaluatorTest {
 	private Evaluator niceRowEvalator ;
 	@Before
 	public void setUp() throws Exception {
-		String input =   "1,KED,A,	10,Y,N,1    \n"
-			+"1,KED,B,	25,Y,N,1    \n"
-			+"1,KED,C,	20	,Y,N,1  \n"
-			+"1,KED,D,	25	,Y,N,1  \n"
-			+"1,KED,E,	20	,Y,N,2  \n"
-			+"1,A,B,	100	,Y,N,1  \n"
-			+"1,C,D,	80	,Y,N,1  \n"
-			+"1,C,G,	20	,Y,N,1  \n"
-			+"1,가,KED,	80	,Y,N,1  \n"
-			+"1,가,나,	20	,Y,N,1  \n"
-			+"1,다,가,	60	,Y,N,1  \n"
-			+"1,라,가,	10	,Y,N,1  \n"
-			+"1,마,나,	30	,Y,N,1  \n"
-			+"1,바,나,	20	,Y,N,1  \n"
-			+"1,나,사,	40	,Y,N,1  \n"
-			+"1,나,아,	30	,Y,N,1  \n"
-			+"1,나,KED,	30	,Y,N,1  \n"
-			+"1,D,E,0	,N,Y,2		\n";
+		String input =   "1,KED,A,	10,Y,N,1, 2016-01-01    \n"
+			+"1,KED,B,	25,Y,N,1, 2016-01-01    \n"
+			+"1,KED,C,	20	,Y,N,1, 2016-01-01  \n"
+			+"1,KED,D,	25	,Y,N,1, 2016-01-01  \n"
+			+"1,KED,E,	20	,Y,N,2, 2016-01-01  \n"
+			+"1,A,B,	100	,Y,N,1, 2016-01-01  \n"
+			+"1,C,D,	80	,Y,N,1, 2016-01-01  \n"
+			+"1,C,G,	20	,Y,N,1, 2016-01-01  \n"
+			+"1,가,KED,	80	,Y,N,1, 2016-01-01  \n"
+			+"1,가,나,	20	,Y,N,1, 2016-01-01  \n"
+			+"1,다,가,	60	,Y,N,1, 2016-01-01  \n"
+			+"1,라,가,	10	,Y,N,1, 2016-01-01  \n"
+			+"1,마,나,	30	,Y,N,1, 2016-01-01  \n"
+			+"1,바,나,	20	,Y,N,1, 2016-01-01  \n"
+			+"1,나,사,	40	,Y,N,1, 2016-01-01  \n"
+			+"1,나,아,	30	,Y,N,1, 2016-01-01  \n"
+			+"1,나,KED,	30	,Y,N,1, 2016-01-01  \n"
+			+"1,D,E,0	,N,Y,2, 2016-01-01		\n";
 		
 		inputTable.setName("입력테이블");
 //		inputTable.setAutoIncrement();
@@ -50,6 +50,7 @@ public class EvaluatorTest {
 		inputTable.appendColumn(new Column("ocYn",DataType.STRING, 1, false, false, "외감여부"));
 		inputTable.appendColumn(new Column("spcRelYn",DataType.STRING, 1, false, false, "특수관계인여부"));
 		inputTable.appendColumn(new Column("sthEnpTyp",DataType.STRING, 1, false, false, "회사의종류"));
+		inputTable.appendColumn(new Column("uptDt",DataType.DATE, 10, false, false, "입력날짜"));
 		
 		String[] lines = input.split("\n");
 		try {
@@ -99,49 +100,50 @@ public class EvaluatorTest {
 
 
 		// 더하기 연산
-		s = niceRowEvalator.evalString("1+1");       assertEquals(s, "2.00");     //n + n
-		s = niceRowEvalator.evalString("1+'23'");    assertEquals(s, "123");//n + s
-		s = niceRowEvalator.evalString("1+eqrt");    assertEquals(s, "4.40");//n + f(n)
-		s = niceRowEvalator.evalString("1+ocYn");    assertEquals(s, "1Y");//n + f(s)
+		s = niceRowEvalator.evalString("1+1");       assertEquals(s, "2");  //i + i
+		s = niceRowEvalator.evalString("1+2.0");     assertEquals(s, "3.0");  //i + d
+		s = niceRowEvalator.evalString("1.0+2");     assertEquals(s, "3.0");  //i + d
+		s = niceRowEvalator.evalString("1.0+2.0");     assertEquals(s, "3.0");  //i + d
+		s = niceRowEvalator.evalString("1+'23'");    assertEquals(s, "123");//i + s
+		s = niceRowEvalator.evalString("1+eqrt");    assertTrue(s.startsWith("4.4"));//i + f(d)
+		s = niceRowEvalator.evalString("eqrt + 1");    assertEquals(s, "4.4");//i + f(d)
+		s = niceRowEvalator.evalString("1+ocYn");    assertEquals(s, "1Y");//i + f(d)
+		s = niceRowEvalator.evalString("ocYn + 1");    assertEquals(s, "Y1");//i + f(d)
 		                                             
-		s = niceRowEvalator.evalString("'1'+23");    assertEquals(s, "123");//s + n
+		s = niceRowEvalator.evalString("1.2 + 2.1");    assertEquals(s, "3.3");//d + d
 		s = niceRowEvalator.evalString("'1'+'23'");  assertEquals(s, "123");//s + s
-		s = niceRowEvalator.evalString("'1'+eqrt");  assertEquals(s, "13.4"); //s + f(n)
-		s = niceRowEvalator.evalString("'1'+ocYn");  assertEquals(s, "1Y"); //s + f(s)
                                                      
-		s = niceRowEvalator.evalString("eqrt+23");   assertEquals(s, "26.40");//f(n) + n
-		s = niceRowEvalator.evalString("eqrt+'23'"); assertEquals(s, "3.423");//f(n) + s
-		s = niceRowEvalator.evalString("eqrt+eqrt"); assertEquals(s, "6.80");//f(n) + f(n)
-		s = niceRowEvalator.evalString("eqrt+ocYn"); assertEquals(s, "3.4Y");//f(n) + f(s)
-                                                     
-		s = niceRowEvalator.evalString("ocYn+23");   assertEquals(s, "Y23");//f(s) + n
-		s = niceRowEvalator.evalString("ocYn+'23'"); assertEquals(s, "Y23");//f(s) + s
-		s = niceRowEvalator.evalString("ocYn+eqrt"); assertEquals(s, "Y3.4");//f(s) + f(n)
-		s = niceRowEvalator.evalString("ocYn+ocYn"); assertEquals(s, "YY");//f(s) + f(s)
 		
 		// 빼기 연산
-		s = niceRowEvalator.evalString("2-1");       assertEquals(s, "1.00");     //n + n
+		s = niceRowEvalator.evalString("2-1");       assertEquals(s, "1");     //i - 1
+		s = niceRowEvalator.evalString("2-1.0");     assertTrue(s.startsWith("1.0"));     //i - 1
+		s = niceRowEvalator.evalString("2.0-1");     assertTrue(s.startsWith("1.0"));     //i - 1
+		s = niceRowEvalator.evalString("2.0-1.0");     assertTrue(s.startsWith("1.0"));     //i - 1
+		
 		s = niceRowEvalator.evalString("4 - eqrt");    assertTrue(s.startsWith("0.60"));//n + f(n)                                                     
-		s = niceRowEvalator.evalString("eqrt-3");	assertEquals(s,"0.40");//f(n) + n
-		s = niceRowEvalator.evalString("eqrt-eqrt"); assertEquals(s, "0.00");//f(n) + f(n)
+		s = niceRowEvalator.evalString("eqrt-3");	assertTrue(Double.parseDouble(s)<0.40);//f(n) + n
+		s = niceRowEvalator.evalString("eqrt-eqrt"); assertEquals(s, "0.0");//f(n) + f(n)
+		
 
 		// 곱하기 연산
-		s = niceRowEvalator.evalString("2*3");       assertEquals(s, "6.00");     //n + n
-		s = niceRowEvalator.evalString("4 * eqrt");    assertEquals(s,"13.60");//n + f(n)                                                     
-		s = niceRowEvalator.evalString("eqrt* 4");	assertEquals(s,"13.60");//f(n) + n
-		s = niceRowEvalator.evalString("eqrt*eqrt"); assertEquals(s, "11.56");//f(n) + f(n)
+		s = niceRowEvalator.evalString("2*3");       assertEquals(s, "6");     //i * i 
+		s = niceRowEvalator.evalString("4 * eqrt");    assertTrue(s.startsWith("13.6"));//i * f(d)                                                     
+		s = niceRowEvalator.evalString("eqrt* 4");	assertTrue(s.startsWith("13.6"));//f(n) * n
+		s = niceRowEvalator.evalString("eqrt*eqrt");assertTrue(s.startsWith("11.5"));//f(n) * f(n)
 		// 나누기 연산
-		s = niceRowEvalator.evalString("4/2");       assertEquals(s, "2.00");     //n + n
-		s = niceRowEvalator.evalString("4 / eqrt");    assertEquals(s,"1.18");//n + f(n)                                                     
-		s = niceRowEvalator.evalString("eqrt / 4");	assertEquals(s,"0.85");//f(n) + n
-		s = niceRowEvalator.evalString("eqrt/eqrt"); assertEquals(s, "1.00");//f(n) + f(n)	
+		s = niceRowEvalator.evalString("4/2");       assertEquals(s, "2");     //i / i
+		s = niceRowEvalator.evalString("4/2.0");       assertEquals(s, "2.0");     //i / i
+		s = niceRowEvalator.evalString("4.0/2");       assertEquals(s, "2.0");     //i / i
+		s = niceRowEvalator.evalString("4.0/2.0");       assertEquals(s, "2.0");     //i / i
+		s = niceRowEvalator.evalString("4 / eqrt");    assertTrue(s.startsWith("1.1"));//i / f(d)                                                     
+		s = niceRowEvalator.evalString("eqrt / 4");	assertTrue(s.startsWith("0.85"));//f(d) / i
+		s = niceRowEvalator.evalString("eqrt/eqrt"); assertTrue(s.startsWith("1"));//f(d) / f(d)	
 		
 		// 나머지 연산
-		s = niceRowEvalator.evalString("4%3");       assertEquals(s, "1.00");     //n + n
-		s = niceRowEvalator.evalString("4%4");       assertEquals(s, "0.00");     //n + n
-		s = niceRowEvalator.evalString("4%0");       assertEquals(s, "NaN");     //n + n
-		s = niceRowEvalator.evalString("4%4");       assertEquals(s, "0.00");     //n + n
-		s = niceRowEvalator.evalString("eqrt%eqrt"); assertEquals(s, "0.00");//f(n) + f(n)			
+		s = niceRowEvalator.evalString("4%3");       assertEquals(s, "1");     //n + n
+		s = niceRowEvalator.evalString("4%4");       assertEquals(s, "0");     //n + n
+//		s = niceRowEvalator.evalString("4%0");       assertEquals(s, "NaN");     //n + n
+		s = niceRowEvalator.evalString("4%4");       assertEquals(s, "0");     //n + n
 	}
 	/**
 	 * 비교연산
@@ -159,6 +161,9 @@ public class EvaluatorTest {
 		//bigger : >
 		b = niceRowEvalator.evalBoolean("eqrt > 30");   assertFalse(b);
 		b = niceRowEvalator.evalBoolean("4>3");   assertTrue(b);
+		b = niceRowEvalator.evalBoolean("4.0>3");   assertTrue(b);
+		b = niceRowEvalator.evalBoolean("4>3.0");   assertTrue(b);
+		b = niceRowEvalator.evalBoolean("4.0>3.0");   assertTrue(b);
 		b = niceRowEvalator.evalBoolean("4>4");   assertFalse(b);
 		b = niceRowEvalator.evalBoolean("eqrt>4");   assertFalse(b);
 		b = niceRowEvalator.evalBoolean("eqrt>3.4");   assertFalse(b);
@@ -169,6 +174,9 @@ public class EvaluatorTest {
 		b = niceRowEvalator.evalBoolean("'222'>'111'");   assertTrue(b); //문자비교
 		
 		//lessthan : <
+		b = niceRowEvalator.evalBoolean("4.0<5");   assertTrue(b);
+		b = niceRowEvalator.evalBoolean("4<5.0");   assertTrue(b);
+		b = niceRowEvalator.evalBoolean("4.0<5.0");   assertTrue(b);
 		b = niceRowEvalator.evalBoolean("eqrt < 30");   assertTrue(b);
 		b = niceRowEvalator.evalBoolean("4<5");   assertTrue(b);
 		b = niceRowEvalator.evalBoolean("4<3");   assertFalse(b);
@@ -183,6 +191,9 @@ public class EvaluatorTest {
 		
 		//bigger_equal : >=
 		b = niceRowEvalator.evalBoolean("4>=3");   assertTrue(b);
+		b = niceRowEvalator.evalBoolean("4>=3.0");   assertTrue(b);
+		b = niceRowEvalator.evalBoolean("4.0>=3");   assertTrue(b);
+		b = niceRowEvalator.evalBoolean("4.0>=3.0");   assertTrue(b);
 		b = niceRowEvalator.evalBoolean("4>=4");   assertTrue(b);
 		b = niceRowEvalator.evalBoolean("eqrt>=4");   assertFalse(b);
 		b = niceRowEvalator.evalBoolean("eqrt>=3.4");   assertTrue(b);
@@ -207,8 +218,8 @@ public class EvaluatorTest {
 		b = niceRowEvalator.evalBoolean("'abc'=='abc'");   assertTrue(b);
 		b = niceRowEvalator.evalBoolean("'abc' eq 'abc'");   assertTrue(b);
 		b = niceRowEvalator.evalBoolean("'abc' eq 'abC'");   assertFalse(b);
-		b = niceRowEvalator.evalBoolean("1 eq 1");   assertTrue(b);
 		b = niceRowEvalator.evalBoolean("1==1.0");   assertTrue(b);
+		b = niceRowEvalator.evalBoolean("1 == 1");   assertTrue(b);
 		b = niceRowEvalator.evalBoolean("1.0==1");   assertTrue(b);
 		b = niceRowEvalator.evalBoolean("1.23==1.23");   assertTrue(b);
 		b = niceRowEvalator.evalBoolean("eqrt==eqrt");   assertTrue(b);
@@ -221,6 +232,7 @@ public class EvaluatorTest {
 		b = niceRowEvalator.evalBoolean("1 ne 1");   assertFalse(b);
 		b = niceRowEvalator.evalBoolean("1!=1.0");   assertFalse(b);
 		b = niceRowEvalator.evalBoolean("1.0!=1");   assertFalse(b);
+		b = niceRowEvalator.evalBoolean("1.0!=1.0");   assertFalse(b);
 		b = niceRowEvalator.evalBoolean("1.23!=1.23");   assertFalse(b);
 		b = niceRowEvalator.evalBoolean("eqrt!=eqrt");   assertFalse(b);
 		b = niceRowEvalator.evalBoolean("ocYn=='Y'");   assertTrue(b);
@@ -279,7 +291,7 @@ public class EvaluatorTest {
 		assertEquals(d1,d2);
 		
 		d1 = niceRowEvalator.evalNumber("eqrt * ( 30 / 100 ) ");
-		d2 = niceRowEvalator.evalNumber("eqrt * 0.3 ");
+		d2 = niceRowEvalator.evalNumber("eqrt * 0.0 ");
 		assertEquals(d1,d2);
 
 		assertTrue(niceRowEvalator.evalBoolean(" (1+2*3) > 6"));

@@ -1,22 +1,51 @@
 package kr.dcos.common.utils.evaluator;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
+
+import org.apache.commons.lang3.math.NumberUtils;
+
 import java.util.Map.Entry;
 
 
 /**
- * Table에서 row를 조회하기 위해서 작성됨
- * Row의 컬럼명과 값을 변수로 받고 문장을 변수로 받아서 수식을 해석한다
- * Table뿐만이 아니고 다른 용도로도 사용가능하다
+ * Table에서 row를 조회하기 위해서 작성됨 <br>
  * 
- * 1. 수식은 1개의 라인으로 구성한다(프로그램 소스처럼 2개이상의 라인은 지원하지 않는다.)
- * 2. field명은 대소문자를 구분하지 않는다 ocYn=ocyn=OCYN
- * 3. 문자열은 ' ' 로 표현하고 ' 안에 ' 가 포함되지 않는것으로 한다
- *  
- * 지원하는 연산자 : == ,  != , ne, eq, and , &&, or, ||,  +, -, /, *, %
+ * Row의 컬럼명과 값을 변수로 받고 문장을 변수로 받아서 수식을 해석한다 <br>
+ * Table뿐만이 아니고 다른 용도로도 사용가능하다<br>
+ * 
+ * 1. 수식은 1개의 라인으로 구성한다(프로그램 소스처럼 2개이상의 라인은 지원하지 않는다.)<br>
+ * 2. field명은 대소문자를 구분하지 않는다 ocYn=ocyn=OCYN<br>
+ * 3. 문자열은 ' ' 로 표현하고 ' 안에 ' 가 포함되지 않는것으로 한다<br>
+ * 4. 더하기 연산자 
+ *    int + int = int, 
+ *    int + double = double, 
+ *    int + str = str, 
+ *    int + date = date(일수에 더한다)
+ *    double + double = double
+ *    str + str = str
+ * 5. 빼기 연산자는 
+ *    int - int = int, 
+ *    int - double = double, 
+ *    int - date = date(일수에 더한다)
+ *    double - double = double
+ * 6. 곱하기 연산자
+ * 	  int * int = int
+ *    int * double = double
+ *    double * double = double
+ * 7. 나누기 연산자
+ *    int / int = int
+ *    int / double = double
+ *    double / double = double
+ * 8. mod연산자는 int % int 만 적용   
+ * 8. 논리연산자는 양쪽이 모두 boolean일 때 적용
+ * 9. 비교연산자
+ *    숫자타입(int, double)끼리, 또는 양쪽이 같은 데이터 타입일때만 비교
+ *             
+ * 지원하는 연산자 : == ,  != , ne, eq, and , &&, or, ||,  +, -, /, *, %<br>
  * 
  * @author 김도영
  *
@@ -26,13 +55,13 @@ public class Evaluator {
 		public boolean isField = false;
 		public TOKEN_TYPE type;
 		public String name;
-		public String value;
+		public Object value;
 		private int icp = 0; // Incoming procedence 스택에 들어올 때의 우선순위
 	    private  int isp = 0; // In-Stack procedence 스택안에서의 우선순위
-		public Token(TOKEN_TYPE type, String name, String value){
+		public Token(TOKEN_TYPE type, String name, Object value){
 			this(type,name, value, 0,0);
 		}
-		public Token(TOKEN_TYPE type, String name, String value, int icp, int isp){
+		public Token(TOKEN_TYPE type, String name, Object value, int icp, int isp){
 			this.type = type; this.name = name; this.value = value; this.icp = icp; this.isp=isp; this.isField = false;
 		}
 		@Override
@@ -40,9 +69,9 @@ public class Evaluator {
 			return "Token name=[" + name + "], type=[" + type + "], value=[" + value + "], icp=[" + icp + "], isp=["+isp+"]";
 		}
 	}
-	//TODO NUMBER_VALUE -> INTEGER_VALUE와 DOUBLE_VALUE로 나눌것
 	//DATE_VALUE 추가할 것
-	private enum TOKEN_TYPE { NUMBER_VALUE, 
+	private enum TOKEN_TYPE { //NUMBER_VALUE,
+		INTEGER_VALUE, DOUBLE_VALUE, DATE_VALUE,
 		STRING_VALUE, BOOLEAN_VALUE,
 		OP_PLUS, OP_MINUS, OP_DIVIDE, OP_MULTIPLE, OP_MOD, OP_BIGGER, OP_LESSTHAN, OP_BIGGER_EQUAL, OP_LESS_EQUAL,
 		OP_EQUAL, OP_NOT_EQUAL,  OP_AND, OP_OR, OP_NOT, SP_LPAREN, SP_RPAREN 
@@ -124,7 +153,11 @@ public class Evaluator {
 				if( object instanceof String){
 					fieldToken = new Token(TOKEN_TYPE.STRING_VALUE, word, object.toString());
 				}else if(object instanceof Double){
-					fieldToken = new Token(TOKEN_TYPE.NUMBER_VALUE, word, object.toString());
+					fieldToken = new Token(TOKEN_TYPE.DOUBLE_VALUE, word, object);
+				}else if(object instanceof Integer){
+					fieldToken = new Token(TOKEN_TYPE.DOUBLE_VALUE, word, object);
+				}else if(object instanceof Date){
+					fieldToken = new Token(TOKEN_TYPE.DOUBLE_VALUE, word, object);
 				}else {
 					fieldToken = new Token(TOKEN_TYPE.STRING_VALUE, word, object.toString());
 				}
@@ -133,8 +166,10 @@ public class Evaluator {
 			}else{
 				fail(word + " 는 존재하지 않은 필드명입니다");
 			}
-		}else if(isNumber(word)) {
-			tokenStack.add( new Token(TOKEN_TYPE.NUMBER_VALUE, word, word) );
+		}else if(isInteger(word)) {
+			tokenStack.add( new Token(TOKEN_TYPE.INTEGER_VALUE, word, Integer.parseInt(word)) );
+		}else if(isDouble(word)) {
+			tokenStack.add( new Token(TOKEN_TYPE.DOUBLE_VALUE, word, Double.parseDouble(word)) );
 		}else if(isString(word)){ //양쪽 ' '이면 문자열로 판단하고 양 ' 를 제거한 후 값에 넣는다
 			tokenStack.add( new Token(TOKEN_TYPE.STRING_VALUE, word, word.substring(1,word.length()-1)) );
 		}else {
@@ -142,24 +177,6 @@ public class Evaluator {
 		}
 	}
 	
-
-	/**
-	 * 나누기 연산을 수행한다. <br>
-	 * 수행결과는 소수점 2 자리로 만들어서 리턴한다
-	 * 
-	 * @param t1
-	 * @param t2
-	 * @return
-	 * @throws EvaluatorException
-	 */
-	private Token divide(Token t1, Token t2) throws EvaluatorException {
-		if(t1.type == TOKEN_TYPE.NUMBER_VALUE && t2.type == TOKEN_TYPE.NUMBER_VALUE  ) { // n + n 
-			return new Token(TOKEN_TYPE.NUMBER_VALUE, t1.name+"+"+t2.name, String.format("%.2f",Double.valueOf(t2.value) / Double.valueOf(t1.value)));	
-		}else{
-			fail(" 숫자와 문자 또는 문자와 문자 사이에 마이너스 연산을 할 수 없습니다");
-		}
-		return null;
-	}
 
 	private Token eval() throws EvaluatorException {
 		
@@ -180,7 +197,7 @@ public class Evaluator {
 				if(o == null){
 					token.value = "";
 				}else{
-					token.value = o.toString();
+					token.value = o;
 				}
 			}
 			stack.push(token);
@@ -249,7 +266,9 @@ public class Evaluator {
                 	tmpStack.push(logicalNot(tmpStack.pop()));
                 	break;
                 case STRING_VALUE:
-                case NUMBER_VALUE:
+                case INTEGER_VALUE:
+                case DOUBLE_VALUE:
+                case DATE_VALUE:
                 case BOOLEAN_VALUE:
                	 	tmpStack.push(token);
                     break;
@@ -289,7 +308,7 @@ public class Evaluator {
                  case SP_LPAREN:
                      tmp.push(token);
                      break;
-                 case NUMBER_VALUE:  case STRING_VALUE: case BOOLEAN_VALUE :
+                 case INTEGER_VALUE: case DOUBLE_VALUE: case DATE_VALUE: case STRING_VALUE: case BOOLEAN_VALUE :
                      postfix.push(token);
                      break;
                  case OP_DIVIDE: case OP_MULTIPLE:  case OP_MINUS: case OP_PLUS: case OP_MOD:
@@ -394,17 +413,37 @@ public class Evaluator {
 	}
 
 
-	private boolean isNumber(String word) {
-		for (int i = 0; i < word.length(); i++) {
-			if( (word.charAt(i) <= '9' && word.charAt(i) >='0' ) || (word.charAt(i) == '.') ) {
-				;
-			}else{
-				return false;
-			}
-		}
-		return true;
+//	private boolean isNumber(String word) {
+//		for (int i = 0; i < word.length(); i++) {
+//			if( (word.charAt(i) <= '9' && word.charAt(i) >='0' ) || (word.charAt(i) == '.') ) {
+//				;
+//			}else{
+//				return false;
+//			}
+//		}
+//		return true;
+//	}
+	
+	public  boolean isInteger(String s) {
+		int radix = 10;
+	    if(s.isEmpty()) return false;
+	    for(int i = 0; i < s.length(); i++) {
+	        if(i == 0 && s.charAt(i) == '-') {
+	            if(s.length() == 1) return false;
+	            else continue;
+	        }
+	        if(Character.digit(s.charAt(i),radix) < 0) return false;
+	    }
+	    return true;
 	}
-
+	public boolean isDouble(String s){
+		try {
+			if(isInteger(s)) return false;
+			return NumberUtils.isNumber(s);			
+		} catch (Exception e) {
+			return false;
+		}
+	}
 
 	private boolean isString(String word) {
 		if(word == null) return false;
@@ -438,10 +477,21 @@ public class Evaluator {
 
 	//연산자 : >
 	private Token logicalBigger(Token t1, Token t2) throws EvaluatorException {
-		if(t1.type == TOKEN_TYPE.NUMBER_VALUE && t2.type == TOKEN_TYPE.NUMBER_VALUE  ) { // n + n 
-			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name, (Double.valueOf(t2.value) >  Double.valueOf(t1.value) ? "true" : "false"));	
+		if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE  ) { //i > i
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name,  (Integer)t2.value > (Integer)t1.value ? "true" : "false");
+			
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE ){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name,  (Integer)t2.value > (Double)t1.value ? "true" : "false");
+			
+		}else if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE ){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name,  (Double)t2.value > (Integer)t1.value ? "true" : "false");
+
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE ){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name,  (Double)t2.value > (Double)t1.value ? "true" : "false");
+			
 		}else if(t1.type==TOKEN_TYPE.STRING_VALUE && t2.type == TOKEN_TYPE.STRING_VALUE ){ // s + s
-			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name, (t1.value.compareTo(t2.value) < 0 ? "true" : "false"));	
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name, (t1.value.toString().compareTo(t2.value.toString()) < 0 ? "true" : "false"));
+			
 		}else{
 			fail(" 숫자와 숫자, 문자와 문자만  비교할 수 있습니다. (" + t1.name + " > " + t2.name + ")");
 		}
@@ -449,12 +499,23 @@ public class Evaluator {
 	}
 
 
+	// 연산자 >=
 	private Token logicalBiggerEqual(Token t1, Token t2) throws EvaluatorException {
+		
+		if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE  ) { // i > i 
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name, (Integer)t2.value >=  (Integer)t1.value ? "true" : "false");
+			
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE ){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name, (Integer)t2.value >=  (Double)t1.value ? "true" : "false");
+			
+		}else if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE ){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name, (Double)t2.value >=  (Integer)t1.value ? "true" : "false");
 
-		if(t1.type == TOKEN_TYPE.NUMBER_VALUE && t2.type == TOKEN_TYPE.NUMBER_VALUE  ) { // n + n 
-			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name, (Double.valueOf(t2.value) >=  Double.valueOf(t1.value) ? "true" : "false"));	
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE ){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name, (Double)t2.value >=  (Double)t1.value ? "true" : "false");
+			
 		}else if(t1.type==TOKEN_TYPE.STRING_VALUE && t2.type == TOKEN_TYPE.STRING_VALUE ){ // s + s
-			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name, (t1.value.compareTo(t2.value) <= 0 ? "true" : "false"));	
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+">"+t2.name, (t1.value.toString().compareTo(t2.value.toString()) <= 0 ? "true" : "false"));	
 		}else{
 			fail(" 숫자와 숫자, 문자와 문자만  비교할 수 있습니다. (" + t1.name + " >= " + t2.name + ")");
 		}
@@ -464,8 +525,14 @@ public class Evaluator {
 
 	//연산자 : ==(eq)
 	private Token logicalEqual(Token t1, Token t2) throws EvaluatorException {
-		if(t1.type == TOKEN_TYPE.NUMBER_VALUE && t2.type == TOKEN_TYPE.NUMBER_VALUE  ) { // n == n 
-			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"=="+t2.name, (Double.parseDouble(t2.value) ==  Double.parseDouble(t1.value) ? "true" : "false"));
+		if( t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE  ) { // n == n 
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"=="+t2.name, (Integer)t2.value ==  (Integer)t1.value ? "true" : "false");
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"=="+t2.name, (Double)t1.value ==  ((Integer)t2.value * 1.0) ? "true" : "false");
+		}else if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"=="+t2.name, (Double)t2.value ==  ((Integer)t1.value * 1.0) ? "true" : "false");
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"=="+t2.name, (double)t2.value ==  (double)t1.value ? "true" : "false");
 		}else if(t1.type == TOKEN_TYPE.STRING_VALUE && t2.type == TOKEN_TYPE.STRING_VALUE  ) { // s == s
 			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"=="+t2.name, t2.value.equals(t1.value) ? "true" : "false");
 		}else{
@@ -477,10 +544,16 @@ public class Evaluator {
 
 	// 연산자 : <= 
 	private Token logicalLessEqual(Token t1, Token t2) throws EvaluatorException {
-		if(t1.type == TOKEN_TYPE.NUMBER_VALUE && t2.type == TOKEN_TYPE.NUMBER_VALUE  ) { // n , n 
-			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, (Double.valueOf(t2.value) <=  Double.valueOf(t1.value) ? "true" : "false"));	
+		if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE  ) { // i < = 
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, (Integer)t2.value <=  (Integer)t1.value ? "true" : "false");
+		}else if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE ){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, (Double)t2.value <=  (Integer)t1.value ? "true" : "false");
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE ){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, (Integer)t2.value <=  (Double)t1.value ? "true" : "false");
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE ){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, (Double)t2.value <=  (Double)t1.value ? "true" : "false");
 		}else if(t1.type==TOKEN_TYPE.STRING_VALUE && t2.type == TOKEN_TYPE.STRING_VALUE ){ // s , s
-			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, ((t1.value.compareTo(t2.value) <= 0) ? "true" : "false"));
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, ((t1.value.toString().compareTo(t2.value.toString()) <= 0) ? "true" : "false"));
 		}else{
 			fail(" 숫자와 숫자, 문자와 문자만  비교할 수 있습니다. (" + t1.name + " <= " + t2.name + ")");
 		}
@@ -496,10 +569,16 @@ public class Evaluator {
 	 * @throws EvaluatorException
 	 */
 	private Token logicalLessThan(Token t1, Token t2) throws EvaluatorException {
-		if(t1.type == TOKEN_TYPE.NUMBER_VALUE && t2.type == TOKEN_TYPE.NUMBER_VALUE  ) { // n , n 
-			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, (Double.valueOf(t2.value) <  Double.valueOf(t1.value) ? "true" : "false"));	
+		if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE  ) { // n , n 
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, (Integer)t2.value <  (Integer)t1.value ? "true" : "false");
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, (Integer)t2.value <  (Double)t1.value ? "true" : "false");
+		}else if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, (Double)t2.value <  (Integer)t1.value ? "true" : "false");
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE){
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, (Double)t2.value <  (Double)t1.value ? "true" : "false");
 		}else if(t1.type==TOKEN_TYPE.STRING_VALUE && t2.type == TOKEN_TYPE.STRING_VALUE ){ // s , s
-			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, ((t1.value.compareTo(t2.value) > 0) ? "true" : "false"));
+			return new Token(TOKEN_TYPE.BOOLEAN_VALUE, t1.name+"<="+t2.name, ((t1.value.toString().compareTo(t2.value.toString()) > 0) ? "true" : "false"));
 		}else{
 			fail(" 숫자와 숫자, 문자와 문자만  비교할 수 있습니다. (" + t1.name + " < " + t2.name + ")");
 		}
@@ -522,7 +601,7 @@ public class Evaluator {
 	private Token logicalNotEqual(Token t1, Token t2) throws EvaluatorException {
 		Token o = this.logicalEqual(t1, t2);
 		if(o != null && o.value != null){
-			if(Boolean.parseBoolean(o.value)){
+			if(Boolean.parseBoolean(o.value.toString())){
 				o.value = "false";
 			}else{
 				o.value = "true";
@@ -548,10 +627,16 @@ public class Evaluator {
 	 * 연산자 : 빼기 연산자
 	 */
 	private Token minus(Token t1, Token t2) throws EvaluatorException  {
-		if(t1.type == TOKEN_TYPE.NUMBER_VALUE && t2.type == TOKEN_TYPE.NUMBER_VALUE  ) { // n + n 
-			return new Token(TOKEN_TYPE.NUMBER_VALUE, t1.name+"+"+t2.name, String.format("%.2f",Double.valueOf(t2.value) - Double.valueOf(t1.value)));	
+		if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE  ) { // i - i
+			return new Token(TOKEN_TYPE.INTEGER_VALUE, t1.name+"+"+t2.name, (Integer)t2.value - (Integer)t1.value);
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE ){
+			return new Token(TOKEN_TYPE.DOUBLE_VALUE, t1.name+"+"+t2.name, (Integer)t2.value - (Double)t1.value);
+		}else if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE ){
+			return new Token(TOKEN_TYPE.DOUBLE_VALUE, t1.name+"+"+t2.name, (Double)t2.value - (Integer)t1.value);
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE ){
+			return new Token(TOKEN_TYPE.DOUBLE_VALUE, t1.name+"+"+t2.name, (Double)t2.value - (Double)t1.value);
 		}else{
-				fail(" 숫자와 숫자만 빼기 연산자를 지원합니다. ");
+			fail(" 숫자와 숫자만 빼기 연산자를 지원합니다. ");
 		}
 		return null;
 	}
@@ -560,10 +645,10 @@ public class Evaluator {
 	 * mod (나머지) 연산자
 	 */
 	private Token mod(Token t1, Token t2) throws EvaluatorException {
-		if(t1.type == TOKEN_TYPE.NUMBER_VALUE && t2.type == TOKEN_TYPE.NUMBER_VALUE  ) { // n + n 
-			return new Token(TOKEN_TYPE.NUMBER_VALUE, t1.name+"+"+t2.name, String.format("%.2f",Double.valueOf(t2.value) % Double.valueOf(t1.value)));	
+		if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE  ) { // n % n 
+			return new Token(TOKEN_TYPE.INTEGER_VALUE, t1.name+"+"+t2.name,  (Integer)t2.value % (Integer)t1.value);	
 		} else {
-			fail(" 숫자와 숫자만 나머지 연산자를 지원합니다.");
+			fail(" 정수형숫자와  정수형숫자만 나머지 연산자를 지원합니다.");
 		}
 		return null;
 	}
@@ -571,8 +656,14 @@ public class Evaluator {
 	 * 곱하기 연산자 
 	 */
 	private Token multiple(Token t1, Token t2) throws EvaluatorException {
-		if(t1.type == TOKEN_TYPE.NUMBER_VALUE && t2.type == TOKEN_TYPE.NUMBER_VALUE  ) { // n + n 
-			return new Token(TOKEN_TYPE.NUMBER_VALUE, t1.name+"+"+t2.name, String.format("%.02f",Double.valueOf(t2.value) * Double.valueOf(t1.value)));	
+		if( t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE  ) { // n * n 
+			return new Token(TOKEN_TYPE.INTEGER_VALUE, t1.name+"+"+t2.name,(Integer)t2.value * (Integer)t1.value);
+		}else if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE){
+			return new Token(TOKEN_TYPE.DOUBLE_VALUE, t1.name+"+"+t2.name, (Double)t2.value * (Integer)t1.value);
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE){
+			return new Token(TOKEN_TYPE.DOUBLE_VALUE, t1.name+"+"+t2.name, (Integer)t2.value * (Double)t1.value);
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE){
+			return new Token(TOKEN_TYPE.DOUBLE_VALUE, t1.name+"+"+t2.name, (Double)t2.value * (Double)t1.value);
 		}else{
 			fail(" 숫자와 숫자만 곱하기 연산자를 지원합니다.");
 		}
@@ -637,13 +728,40 @@ public class Evaluator {
 		parsedCode = statement.hashCode();
 		postfixStack = getPostfixStack(tokenStack);
 	}
-
+	/**
+	 * 나누기 연산을 수행한다. <br>
+	 * 
+	 * @param t1
+	 * @param t2
+	 * @return
+	 * @throws EvaluatorException
+	 */
+	private Token divide(Token t1, Token t2) throws EvaluatorException {
+		if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE  ) { // n / n 
+			return new Token(TOKEN_TYPE.INTEGER_VALUE, t1.name+"/"+t2.name, (Integer)t2.value / (Integer)t1.value);
+		}else if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE ){
+			return new Token(TOKEN_TYPE.DOUBLE_VALUE, t1.name+"/"+t2.name, (Double)t2.value / (Integer)t1.value);
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE ){
+			return new Token(TOKEN_TYPE.DOUBLE_VALUE, t1.name+"/"+t2.name, (Integer)t2.value / (Double)t1.value);
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE ){
+			return new Token(TOKEN_TYPE.DOUBLE_VALUE, t1.name+"/"+t2.name, (Double)t2.value / (Double)t1.value);
+		}else{
+			fail(" 숫자와 문자 또는 문자와 문자 사이에 마이너스 연산을 할 수 없습니다");
+		}
+		return null;
+	}
 	/**
 	 * 더하기 연산자
 	 */
 	private Token plus(Token t1, Token t2) {
-		if(t1.type == TOKEN_TYPE.NUMBER_VALUE && t2.type == TOKEN_TYPE.NUMBER_VALUE  ) { // n + n
-			return new Token(TOKEN_TYPE.NUMBER_VALUE, t1.name+"+"+t2.name, String.format("%.2f",(Double.valueOf(t1.value) + Double.valueOf(t2.value))));
+		if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE  ) { // n + n
+			return new Token(TOKEN_TYPE.INTEGER_VALUE, t1.name+"+"+t2.name, (Integer)t1.value + (Integer)t2.value);
+		}else if(t1.type == TOKEN_TYPE.INTEGER_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE){	
+			return new Token(TOKEN_TYPE.DOUBLE_VALUE, t1.name+"+"+t2.name, (Integer)t1.value + (Double)t2.value);
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.INTEGER_VALUE){	
+			return new Token(TOKEN_TYPE.DOUBLE_VALUE, t1.name+"+"+t2.name, (Double)t1.value + (Integer)t2.value);
+		}else if(t1.type == TOKEN_TYPE.DOUBLE_VALUE && t2.type == TOKEN_TYPE.DOUBLE_VALUE){	
+			return new Token(TOKEN_TYPE.DOUBLE_VALUE, t1.name+"+"+t2.name, (Double)t1.value + (Double)t2.value);
 		}else if(t1.type==TOKEN_TYPE.STRING_VALUE || t2.type == TOKEN_TYPE.STRING_VALUE)  { // s, s
 			return new Token(TOKEN_TYPE.STRING_VALUE, t1.name+"+"+t2.name, t2.value.toString() + t1.value.toString());
 		}
@@ -660,7 +778,7 @@ public class Evaluator {
 		}
 		Token o = eval();
 		if(o == null || o.value == null) fail("수식을 해석하지 못했습니다 [" + this.statement + "]");
-		if(o.value.equalsIgnoreCase("true")) {
+		if(o.value.toString().equalsIgnoreCase("true")) {
 			return true;
 		}
 		return false;
@@ -678,10 +796,10 @@ public class Evaluator {
 			fail("변수를 가지고 있는 Map 또는 해석할 문장이 존재하지 않습니다");
 		}
 		Token o = eval();
-		if (o == null || o.value == null || o.type != TOKEN_TYPE.NUMBER_VALUE){
+		if (o == null || o.value == null || (o.type != TOKEN_TYPE.INTEGER_VALUE && o.type != TOKEN_TYPE.DOUBLE_VALUE)){
 			fail("수식을 해석하지 못했습니다 [" + this.statement + "]");
 		}
-		return Double.parseDouble(o.value);
+		return Double.parseDouble(o.value.toString());
 		
 	}
 	public Double evalNumber(Map<String, Object> variableMap) throws EvaluatorException {
