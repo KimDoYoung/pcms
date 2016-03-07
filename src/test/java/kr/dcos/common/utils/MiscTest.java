@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class MiscTest {
@@ -56,13 +57,13 @@ public class MiscTest {
 			return false;
 		}
 	}
-	@Test
+	@Test @Ignore
 	public void test1() {
 		Integer i = 10;
 		Double d = 10.0;
 		assertTrue( (double)i == (double)d);
 		Object o = 10;
-		assertTrue((int)o == 10);
+		assertTrue((Integer)o == 10);
 		
 	}
 }
