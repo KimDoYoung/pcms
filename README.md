@@ -1,5 +1,8 @@
 # pcms-personal contents management system
 
+# 컨텐츠를 몇가지 분류로 관리할 수 있도록 한다.
+게시판 자동생성이라고 요약해 볼 수 있지 않을까?
+
 # 필요한 라이브러리
 1. cms-mvc 를 사용
 2. jetty embeded
