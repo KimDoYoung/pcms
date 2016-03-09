@@ -242,6 +242,7 @@ public class CmsDispatcherAd extends HttpServlet {
 
 			Object o = methodInfo.getMethod().invoke(requestInfo);
 			if(o==null){
+				//TODO common/error.jsp가 없으면 어떻게 하는가?
 				renderView("/common/error.jsp",request,response);
 			}else{
 				if(o instanceof String){
