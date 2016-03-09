@@ -39,14 +39,9 @@ public class RequestInfo {
 	
 	private static Logger logger = LoggerFactory.getLogger(RequestInfo.class);
 	
+	// 서블릿 컨텍스트 
 	private ServletContext servletContext;
-	public ServletContext getServletContext() {
-		return servletContext;
-	}
-	public void setServletContext(ServletContext servletContext) {
-		this.servletContext = servletContext;
-	}
-
+	
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 
@@ -75,6 +70,12 @@ public class RequestInfo {
 	//
 	// getter , setter
 	//
+	public ServletContext getServletContext() {
+		return servletContext;
+	}
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext = servletContext;
+	}
 	public String getReturnUrl() {
 		return returnUrl;
 	}

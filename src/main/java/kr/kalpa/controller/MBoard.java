@@ -38,6 +38,11 @@ public class MBoard {
 		FileUtils.writeStringToFile(file, data);
 		ForwardInfo fw = new ForwardInfo("/mboard/aaa.jsp");
 		return  fw;			
- 
 	}	
+	@ControllerMethod
+	public ForwardInfo createBoard(RequestInfo ri) throws IOException {
+//		ForwardInfo fw = new ForwardInfo("/mboard/aaa.jsp");
+//		return fw;
+		return null;
+	}
 }

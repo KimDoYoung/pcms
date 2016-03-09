@@ -242,7 +242,7 @@ public class CmsDispatcherAd extends HttpServlet {
 
 			Object o = methodInfo.getMethod().invoke(requestInfo);
 			if(o==null){
-				;//???
+				renderView("/common/error.jsp",request,response);
 			}else{
 				if(o instanceof String){
 					String jsp = (String)o;
@@ -260,7 +260,6 @@ public class CmsDispatcherAd extends HttpServlet {
 						view = viewResolver.resolve(fi.getPath());
 					}
 					renderView(view,model,request,response);
-					
 				}else{
 					renderView("/common/error.jsp",request,response);
 				}
