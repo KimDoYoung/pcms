@@ -11,8 +11,8 @@ import kr.dcos.common.servlet.ControllerMethod;
 import kr.dcos.common.servlet.ForwardInfo;
 import kr.dcos.common.servlet.RequestInfo;
 
-public class MBoard {
-	private static Logger logger = LoggerFactory.getLogger(MBoard.class);
+public class MBoardController {
+	private static Logger logger = LoggerFactory.getLogger(MBoardController.class);
 	@ControllerMethod
 	public ForwardInfo test(RequestInfo ri) {
 		logger.debug(ri.toString());
@@ -43,7 +43,8 @@ public class MBoard {
 	@ControllerMethod
 	public ForwardInfo createBoard(RequestInfo ri) throws IOException {
 		//TODO create meta data file db에 넣을 것인가는 생각봐야함.
-		
+//		MBoardMetaData meta = ri.getPOJO(MBoardMetaData.class);
+//		MBoard mBoard = new MBoard(meta);
 		//TODO create data source
 		//TODO create jsp files
 		return null;
