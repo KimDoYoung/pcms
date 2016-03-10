@@ -16,8 +16,9 @@ public class MBoard {
 	@ControllerMethod
 	public ForwardInfo test(RequestInfo ri) {
 		logger.debug(ri.toString());
-		
+
 		ForwardInfo fw = new ForwardInfo("/mboard/index.jsp");
+		fw.setAttributesFromRequest(ri.getRequest());
 		return  fw;			
 	}
 	/**
@@ -41,8 +42,10 @@ public class MBoard {
 	}	
 	@ControllerMethod
 	public ForwardInfo createBoard(RequestInfo ri) throws IOException {
-//		ForwardInfo fw = new ForwardInfo("/mboard/aaa.jsp");
-//		return fw;
+		//TODO create meta data file db에 넣을 것인가는 생각봐야함.
+		
+		//TODO create data source
+		//TODO create jsp files
 		return null;
 	}
 }

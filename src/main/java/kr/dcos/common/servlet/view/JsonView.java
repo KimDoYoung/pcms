@@ -1,16 +1,13 @@
 package kr.dcos.common.servlet.view;
 
 import java.util.HashMap;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import kr.dcos.common.servlet.Model;
-import kr.dcos.common.utils.StrUtils;
-import kr.dcos.common.utils.ValueText;
-
 import com.google.gson.Gson;
+
+import kr.dcos.common.servlet.Model;
 
 public class JsonView implements View {
 	
@@ -27,7 +24,6 @@ public class JsonView implements View {
 			
 			response.setContentType("application/json;charset=UTF-8");
 		    response.setCharacterEncoding("UTF-8");
-			//String result = StrUtils.toCharset(s.toString(), "UTF-8");
 			response.getWriter().print(s);
 		}
 	}

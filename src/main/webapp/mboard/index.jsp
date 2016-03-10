@@ -11,7 +11,8 @@
 <title>mboard-createBoard</title>
 </head>
 <body>
-create board....
+create board....${name } <br>
+${requestScope.attrib}
 </body>
 <script>
 $( document ).ready(function() {

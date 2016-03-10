@@ -53,6 +53,7 @@ public class RequestInfo {
 
 	private MultipartFormData multipartFormData=null;
 
+	//TODO upload path를 감출것
 	public RequestInfo(HttpServletRequest request,HttpServletResponse response,HttpMethod httpMethod){
 		this(request,response,httpMethod,"c:/temp/uploaded");
 	}
@@ -431,7 +432,7 @@ public class RequestInfo {
 			return (T)b;
 			
 		}else{
-			logger.warn(type.toString() + " is unknown, change to string");
+			logger.warn(type.toString() + " is unknown, changed to string");
 			return (T)s;
 		}
 	}

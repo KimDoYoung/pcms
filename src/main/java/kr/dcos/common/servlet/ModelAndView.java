@@ -42,7 +42,4 @@ public class ModelAndView {
 	public void setView(View view) {
 		this.view = view;
 	}
-	public void addAttribute(Object object){
-		
-	}
 }

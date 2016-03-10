@@ -11,6 +11,7 @@
 <title>mboard-index</title>
 </head>
 <body>
+${hong }
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->

@@ -11,10 +11,10 @@ import java.util.Map.Entry;
  *
  */
 public class Model {
-	Map<String, Object> map;
+	private Map<String, Object> map;
     
     public Model() {
-            map = new HashMap<String,Object>();
+        map = new HashMap<String,Object>();
     }
     
     public Object getAttribute(String name){

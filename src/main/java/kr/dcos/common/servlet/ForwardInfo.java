@@ -1,6 +1,9 @@
 package kr.dcos.common.servlet;
 
+import java.util.Enumeration;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import kr.dcos.common.servlet.view.ErrorResolver;
 import kr.dcos.common.servlet.view.FileResolver;
@@ -138,7 +141,7 @@ public class ForwardInfo {
 	// model에 데이터를 넣는다
 	//
 	public void addAttribute(String name,Object value){
-		if(value == null) return;
+		//if(value == null) return;
 		model.addAttribute(name, value);
 	}
 	public void setAttribute(String name, Object value) {
@@ -182,6 +185,26 @@ public class ForwardInfo {
 
 	public boolean hasError() {
 		return (errorManager.size() > 0);
+	}
+	/**
+	 * request로 받은 parameter들을 모두 모델에 넣는다.
+	 * @param request
+	 */
+	public void setAttributesFromRequest(HttpServletRequest request) {
+		Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String paramName = parameterNames.nextElement();
+            String[] paramValues = request.getParameterValues(paramName);
+            if(paramValues == null){
+            	setAttribute(paramName, null);
+            }else{
+            	if(paramValues.length == 1){
+            		setAttribute(paramName, paramValues[0]);
+            	}else{
+            		setAttribute(paramName, paramValues);
+            	}
+            }
+        }
 	}
 
 }
