@@ -4,6 +4,7 @@
 $id: movies
 $name:영화목록 
 $type : borad1 
+$dataSourceId : oracle
 $desc:
 	 수집한 영록화 목록들
 	sosoosofowwof

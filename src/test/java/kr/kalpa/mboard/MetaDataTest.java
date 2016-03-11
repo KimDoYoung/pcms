@@ -23,6 +23,7 @@ public class MetaDataTest {
 			+ " $id: movies                            \n"
 			+ " $name:영화목록                              \n"
 			+ " $type : borad1                         \n"
+			+ " $dataSourceId : oracle\n"
 			+ " $desc:                                 \n"
 			+ " 	 수집한 영화 목록들                         \n"
 			+ " 	sosoosofowwof                        \n"
@@ -49,12 +50,17 @@ public class MetaDataTest {
 	public void tearDown() throws Exception {
 	}
 
+	/**
+	 * 문자열로 받은 메타데이터를 정확히 해석하는가?
+	 * @throws MBoardException
+	 */
 	@Test
 	public void test() throws MBoardException {
 		MetaData metaData  = new MetaData(metaString);
 		assertEquals(metaData.getId(), "movies");
 		assertEquals(metaData.getName(), "영화목록");
 		assertEquals(metaData.getType(), "borad1");
+		assertEquals(metaData.getDataSourceId(), "oracle");
 		assertEquals(metaData.getFields().size(),8);
 		
 		List<Field> list = metaData.getFields();
@@ -87,6 +93,11 @@ public class MetaDataTest {
 		assertEquals(list.get(7).pilsuYn,"N");
 		
 	}
+	/**
+	 * 리소스에 있는 파일로  받은 메타데이터를 정확히 해석하는가?
+	 * @throws IOException
+	 * @throws MBoardException
+	 */
 	@Test
 	public void loadFileTest() throws IOException, MBoardException{
 		String resourcePath = "/metadata/example.meta";
@@ -128,5 +139,24 @@ public class MetaDataTest {
 		assertEquals(list.get(7).size.toString(),"0");
 		assertEquals(list.get(7).precision.toString(),"0");
 		assertEquals(list.get(7).pilsuYn,"N");		
+	}
+	/**
+	 * 문자열로 받아서 해석한것 meta1, meta1을 file로 write 다시 읽어서  해석한 것 meta2
+	 * meta1과 meta2가 같은 내용인가?
+	 * @throws MBoardException 
+	 * @throws IOException 
+	 */
+	@Test
+	public void writeAndReadTest() throws MBoardException, IOException {
+		MetaData meta1  = new MetaData(metaString);
+		String resourcePath = "/metadata/meta2.meta";
+		URL url = MetaData.class.getResource(resourcePath);
+		
+		String path = url.getFile();
+		meta1.writeToFile(new File(path));
+		
+		MetaData meta2 = new MetaData(new File(path));
+		
+		assertEquals(meta1.getId(), meta2.getId());
 	}
 }

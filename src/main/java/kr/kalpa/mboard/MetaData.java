@@ -25,11 +25,17 @@ public class MetaData {
 		public Integer size;
 		public Integer precision; //소수점 자리
 		public String pilsuYn;
+		@Override
+		public String toString(){
+			return String.format("%s, %s, %s, %s.%s, %s",id, title, dataType.toString(), size,precision,pilsuYn);
+		}
 	}
 	private String id;
 	private String name;
 	private String type;
 	private String desc;
+	private String dataSourceId;
+
 	private List<Field> fields;
 	
 	public MetaData(String metaString) throws MBoardException {
@@ -37,8 +43,17 @@ public class MetaData {
 		parsing(metaString);
 	}
 	
-	public MetaData(File file) throws MBoardException, IOException {
-		this(FileUtils.readFileToString(file, "UTF-8"));
+	public MetaData(File file) throws MBoardException {
+		
+		String metaString;
+		try {
+			metaString = FileUtils.readFileToString(file, "UTF-8");
+			fields = new ArrayList<Field>();
+			parsing(metaString);
+
+		} catch (IOException e) {
+			throw new MBoardException(e.getMessage());
+		}
 	}
 
 	private void parsing(String metaString) throws MBoardException{
@@ -72,6 +87,13 @@ public class MetaData {
 				}
 				continue;
 			}
+			if(s.startsWith("$dataSourceId")){
+				pos = s.indexOf(':');
+				if(pos > -1){
+					dataSourceId = s.substring(pos+1).trim();
+				}
+				continue;
+			}			
 			if(s.startsWith("$desc")){
 				pos = s.indexOf(':');
 				if(pos > -1){
@@ -192,7 +214,7 @@ public class MetaData {
 			return DataType.String;
 		}else if(s.trim().equalsIgnoreCase("int") || s.trim().equalsIgnoreCase("integer") ){
 			return DataType.Integer;
-		}else if(s.trim().equalsIgnoreCase("real") || s.trim().equalsIgnoreCase("real") || s.trim().equalsIgnoreCase("number") ){
+		}else if(s.trim().equalsIgnoreCase("real") || s.trim().equalsIgnoreCase("double") || s.trim().equalsIgnoreCase("number") ){
 			return DataType.Double;
 		}else if(s.trim().equalsIgnoreCase("date") || s.trim().equalsIgnoreCase("datetime")){
 			return DataType.DateTime;
@@ -236,14 +258,36 @@ public class MetaData {
 	public List<Field> getFields() {
 		return fields;
 	}
-	
+	public String getDataSourceId() {
+		return dataSourceId;
+	}
+
+	public void setDataSourceId(String dataSourceId) {
+		this.dataSourceId = dataSourceId;
+	}	
+	public void writeToFile(File file) throws  MBoardException {
+		try {
+			
+			FileUtils.writeStringToFile(file, toString());
+		} catch (Exception e) {
+			throw new MBoardException(e.getMessage());
+		}
+	}
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		sb.append("$id:").append(id).append("\n");
 		sb.append("$name:").append(name).append("\n");
 		sb.append("$type:").append(type).append("\n");
+		sb.append("$dataSourceId:").append(dataSourceId).append("\n");
 		sb.append("$desc:").append("\n").append(desc).append("\n");
+		sb.append("$fields").append("\n");
+		for (Field field : fields) {
+			sb.append(field.toString()).append("\n");
+		}
+		sb.append("fields$").append("\n");
 		return sb.toString();
 	}
+
+
 }
