@@ -1,12 +1,13 @@
 package kr.kalpa.mboard;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import kr.kalpa.controller.MBoardController;
 
 /**
  * MBoard의 메타데이터
@@ -36,6 +37,10 @@ public class MetaData {
 		parsing(metaString);
 	}
 	
+	public MetaData(File file) throws MBoardException, IOException {
+		this(FileUtils.readFileToString(file, "UTF-8"));
+	}
+
 	private void parsing(String metaString) throws MBoardException{
 		String[] lines = metaString.split("\n");
 		String s; int pos; boolean descFlag = false, fieldFlag = false;
@@ -119,9 +124,14 @@ public class MetaData {
 		field.id = ss[0].trim();
 		field.title = ss[1].trim();
 		field.dataType = toDataType(ss[2]);
-		field.size = getJeongsu(ss[3]);
-		field.precision = getPrecision(ss[3]);
-		if(ss.length > 4){
+		if(field.dataType == DataType.DateTime ||field.dataType == DataType.Integer ){
+			field.size = 0;
+			field.precision = 0;
+		} else {
+			field.size = getJeongsu(ss[3]);
+			field.precision = getPrecision(ss[3]);
+		}
+		if(ss.length > 3){
 			field.pilsuYn = toYn(ss[4]);
 		}
 		fields.add(field);
