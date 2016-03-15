@@ -13,7 +13,7 @@ import kr.dcos.common.sql.exception.SqlExecutorException;
 import kr.dcos.common.sql.exception.SqlPickerException;
 import kr.dcos.common.sql.sqlpicker.SqlPicker;
 import kr.dcos.common.utils.ConvertUtil;
-
+import kr.kalpa.db.DbType;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -99,11 +99,13 @@ public class DatabaseManager {
 			   String url = e.getChildText("url");
 			   String userId = e.getChildText("userId");
 			   String password = e.getChildText("password");
+			   String dbType = e.getChildText("dbtype");
 			   
 			   BasicInfo basicInfo = new BasicInfo();
 			   basicInfo.setUrl(url);
 			   basicInfo.setUserId(userId);
 			   basicInfo.setPassword(password);
+			   basicInfo.setDbType(DbType.typeOf(dbType));
 			   database.setBasicInfo(basicInfo);
 			   
 			   //connection-pool-info
@@ -168,11 +170,15 @@ public class DatabaseManager {
 		return sqlExec;
 	}
 	public Connection getConnection(String dbName) throws SqlExecutorException {
+		Database database = getDatabase(dbName);
+		if(database != null){
+			return database.getConnManager().getConnection();
+		}
+		return null;
+	}
+	public Database getDatabase(String dbName) {
 		if (dbMap.containsKey(dbName)) {
-			Database db = dbMap.get(dbName);
-			if (db != null) {
-				return db.getConnManager().getConnection();
-			}
+			return dbMap.get(dbName);
 		}
 		return null;
 	}

@@ -4,6 +4,7 @@
 	<!-- 	오라클 Oracle -->
 	<database id="oracle">
 		<basic-info>
+		    <dbtype>oracle</dbtype>
 			<url>jdbc:oracle:thin:@KimDoYoung-PC:1521:XE</url>
 			<userId>kdy</userId>
 			<password>kdy987</password>

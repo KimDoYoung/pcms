@@ -2,35 +2,29 @@ package kr.kalpa.mboard;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.net.URL;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import kr.dcos.common.sql.database.DatabaseManager;
+import kr.dcos.common.sql.exception.SqlExecutorException;
+import kr.kalpa.db.sql.SqlFactory;
+
 public class MBoardTest {
 
-	private String metaString = ""
-			+ " #                                      \n"
-			+ " # 게시판 자동생성을 위한 메타데이터                   \n"
-			+ " #                                      \n"
-			+ " $id: movies                            \n"
-			+ " $name:영화목                              \n"
-			+ " $type : borad1                         \n"
-			+ " $desc:                                 \n"
-			+ " 	 수집한 영록화 목록들                         \n"
-			+ " 	sosoosofowwof                        \n"
-			+ " 	sofoososoeofw                        \n"
-			+ " desc$                                  \n"
-            + "                                        \n"
-			+ " $fields:                               \n"
-			+ "  id, 아이디, string, 10, Y                \n"
-			+ "  hname, 한글 제목, string, 200, N          \n"
-			+ "  ename, 영어 제목, string, 200, N          \n"
-			+ "  year, 제작년도, string, 4, N              \n"
-			+ "  country, 제작국가, string, 10,N           \n"
-			+ " fields$"
-			+"";
+	private String metaString = null;
 	@Before
 	public void setUp() throws Exception {
+		String resourcePath = "/metadata/example.meta";
+		URL url = MetaData.class.getResource(resourcePath);
+		assertNotNull(url);
+		String filePath = url.getFile();
+		File file = new File(filePath);
+		metaString = FileUtils.readFileToString(file, "UTF-8");
 	}
 
 	@After
@@ -38,10 +32,24 @@ public class MBoardTest {
 	}
 
 	@Test
-	public void test() throws MBoardException {
+	public void testNew() throws MBoardException {
 		MBoard mBoard = new MBoard(new MetaData(metaString));
 		assertNotNull(mBoard);
 		System.out.println(mBoard.toString());
+	}
+	@Test
+	public void testCreateBoard() throws SqlExecutorException, MBoardException{
+		MBoard mBoard = new MBoard(new MetaData(metaString));
+		//mBoard.createBoard();
+		MetaData metaData = mBoard.getMetaData();
+		if(metaData.getDataSourceType().equals("database")){
+			String databaseName = metaData.getDataSourceId();
+			 
+			String sqlString = SqlFactory.getSqlGenerator(databaseName).createTable(metaData);
+			DatabaseManager.getInstance().getSqlExecutor(databaseName).executeDirect(sqlString);
+			
+		}		
+
 	}
 
 }

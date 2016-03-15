@@ -32,9 +32,11 @@ public class MetaData {
 	}
 	private String id;
 	private String name;
-	private String type;
+	private String boardType;
 	private String desc;
+
 	private String dataSourceId;
+	private String dataSourceType;
 
 	private List<Field> fields;
 	
@@ -83,7 +85,14 @@ public class MetaData {
 			if(s.startsWith("$type")){
 				pos = s.indexOf(':');
 				if(pos > -1){
-					type = s.substring(pos+1).trim();
+					boardType = s.substring(pos+1).trim();
+				}
+				continue;
+			}
+			if(s.startsWith("$dataSourceType")){
+				pos = s.indexOf(':');
+				if(pos > -1){
+					dataSourceType = s.substring(pos+1).trim();
 				}
 				continue;
 			}
@@ -239,14 +248,6 @@ public class MetaData {
 		this.name = name;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public String getDesc() {
 		return desc;
 	}
@@ -265,6 +266,15 @@ public class MetaData {
 	public void setDataSourceId(String dataSourceId) {
 		this.dataSourceId = dataSourceId;
 	}	
+	public String getBoardType() {
+		return boardType;
+	}
+
+
+	public String getDataSourceType() {
+		return dataSourceType;
+	}
+
 	public void writeToFile(File file) throws  MBoardException {
 		try {
 			
@@ -276,10 +286,11 @@ public class MetaData {
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
+		sb.append("$dataSourceType:").append(dataSourceType).append("\n");
+		sb.append("$dataSourceId:").append(dataSourceId).append("\n");
 		sb.append("$id:").append(id).append("\n");
 		sb.append("$name:").append(name).append("\n");
-		sb.append("$type:").append(type).append("\n");
-		sb.append("$dataSourceId:").append(dataSourceId).append("\n");
+		sb.append("$type:").append(boardType).append("\n");
 		sb.append("$desc:").append("\n").append(desc).append("\n");
 		sb.append("$fields").append("\n");
 		for (Field field : fields) {

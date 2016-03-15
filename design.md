@@ -18,9 +18,10 @@ MBoard가 여러개의 클래스별로 분배해 주는 역활을 한다.
 4. deleteItem
 
 #metadata
-
+- datasourceId
+- datasourceType
 - db : 저장공간 데이터베이스의 종류
-- type : 게시판의 유형
+- boardtype : 게시판의 유형
 	- 옵션
 - id : 게시판의 id -> 데이터베이스의 테이블명을 이것으로 한다
 - title : 게시판의 종류

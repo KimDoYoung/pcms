@@ -17,7 +17,7 @@ public enum DbType {
 		return value;
 	}
 
-	public static DbType stringValueOf(String db_type) {
+	public static DbType typeOf(String db_type) {
 		if(db_type.equalsIgnoreCase("MySql")){
 			return DbType.MySql;
 		}else if(db_type.equalsIgnoreCase("Microsoft_Sql_Server") || db_type.equalsIgnoreCase("mssql")){

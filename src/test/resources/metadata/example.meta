@@ -1,11 +1,13 @@
 #
 # 게시판 자동생성을 위한 메타데이터
 #
+$dataSourceType:database
+$dataSourceId : oracle
 $id: movies
 $name:영화목록 
 $type : borad1 
 $desc:
-	 수집한 영록화 목록들
+	 수집한 영화 목록들
 	sosoosofowwof
 	sofoososoeofw
 desc$

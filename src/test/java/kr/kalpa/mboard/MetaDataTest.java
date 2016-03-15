@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,34 +17,15 @@ import kr.kalpa.mboard.MetaData.DataType;
 import kr.kalpa.mboard.MetaData.Field;
 
 public class MetaDataTest {
-	private String metaString = ""
-			+ " #                                      \n"
-			+ " # 게시판 자동생성을 위한 메타데이터                   \n"
-			+ " #                                      \n"
-			+ " $id: movies                            \n"
-			+ " $name:영화목록                              \n"
-			+ " $type : borad1                         \n"
-			+ " $dataSourceId : oracle\n"
-			+ " $desc:                                 \n"
-			+ " 	 수집한 영화 목록들                         \n"
-			+ " 	sosoosofowwof                        \n"
-			+ " 	sofoososoeofw                        \n"
-			+ " desc$                                  \n"
-            + "                                        \n"
-			+ " $fields:                               \n"
-			+ "  id, 아이디, string, 10, Y                \n"
-			+ "  hname, 한글 제목, string, 200, N          \n"
-			+ "  ename, 영어 제목, string, 200, N          \n"
-			+ "  year, 제작년도, string, 4, N              \n"
-			+ "  country, 제작국가, string, 10,N           \n"
-			+ "   jumsu, 점수, int,2,N          \n"
-			+ "  cost, 가격, number, 10.2,N          \n"
-			+ " upd_dt, 입력일시, date, 20,N          \n"
-			
-			+ " fields$"
-			+"";
+	private String metaString = null;
 	@Before
 	public void setUp() throws Exception {
+		String resourcePath = "/metadata/example.meta";
+		URL url = MetaData.class.getResource(resourcePath);
+		assertNotNull(url);
+		String filePath = url.getFile();
+		File file = new File(filePath);
+		metaString = FileUtils.readFileToString(file, "UTF-8");
 	}
 
 	@After
@@ -59,7 +41,7 @@ public class MetaDataTest {
 		MetaData metaData  = new MetaData(metaString);
 		assertEquals(metaData.getId(), "movies");
 		assertEquals(metaData.getName(), "영화목록");
-		assertEquals(metaData.getType(), "borad1");
+		assertEquals(metaData.getBoardType(), "borad1");
 		assertEquals(metaData.getDataSourceId(), "oracle");
 		assertEquals(metaData.getFields().size(),8);
 		
@@ -106,9 +88,11 @@ public class MetaDataTest {
 		String filePath = url.getFile();
 		File file = new File(filePath);
 		MetaData metaData  = new MetaData(file);
+		assertEquals(metaData.getDataSourceType(), "database");
+		assertEquals(metaData.getDataSourceId(), "oracle");
 		assertEquals(metaData.getId(), "movies");
 		assertEquals(metaData.getName(), "영화목록");
-		assertEquals(metaData.getType(), "borad1");
+		assertEquals(metaData.getBoardType(), "borad1");
 		assertEquals(metaData.getFields().size(),8);
 		
 		List<Field> list = metaData.getFields();
@@ -158,5 +142,6 @@ public class MetaDataTest {
 		MetaData meta2 = new MetaData(new File(path));
 		
 		assertEquals(meta1.getId(), meta2.getId());
+		System.out.println(meta2.toString());
 	}
 }

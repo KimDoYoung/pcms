@@ -1,5 +1,6 @@
 package kr.kalpa.utils;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
@@ -23,6 +24,7 @@ public class DbTypeTest {
 		assertNotNull(DbType.MySql);
 		assertNotNull(DbType.Oracle);
 		assertNotNull(DbType.Microsoft_Sql_Server);
+		assertEquals(DbType.typeOf("oracle"), DbType.Oracle);
 	}
 
 }

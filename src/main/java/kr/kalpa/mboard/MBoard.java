@@ -1,5 +1,8 @@
 package kr.kalpa.mboard;
 
+import kr.dcos.common.sql.database.DatabaseManager;
+import kr.dcos.common.sql.exception.SqlExecutorException;
+
 /**
  * MBoard 
  * 게시판의 생성, 수정, 삭제
@@ -17,9 +20,10 @@ public class MBoard {
 
 	/**
 	 * 설정된 메타데이터를 바탕으로 게시판을다 생성한다
+	 * @throws SqlExecutorException 
 	 */
-	public void createBoard(){
-		
+	public void createBoard() throws SqlExecutorException{
+
 	}
 	/**
 	 * 새로운 메타데이터를 바탕으로 게시판을 수정한다. <br>
