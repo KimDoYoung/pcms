@@ -11,13 +11,13 @@ import kr.dcos.common.sql.database.ServiceBase;
 import kr.dcos.common.sql.exception.SqlExecutorException;
 import kr.dcos.common.utils.ConvertUtil;
 
-public class DbService extends ServiceBase  {
+public class DatabaseService extends ServiceBase  {
 	
-	private static Logger logger = LoggerFactory.getLogger(DbService.class);
+	private static Logger logger = LoggerFactory.getLogger(DatabaseService.class);
 
 	private String dbName;
 	
-	public DbService(){
+	public DatabaseService(){
 		dbName = "wansync";
 	}
 
