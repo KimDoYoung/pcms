@@ -31,6 +31,15 @@ public class MetaDataTest {
 	@After
 	public void tearDown() throws Exception {
 	}
+	@Test
+	public void testValid() throws MBoardException {
+		MetaData metaData  = new MetaData(metaString);
+		
+        assertEquals(metaData.validCheck(), "OK");
+        metaData.setId(null);
+        String s = metaData.validCheck();
+        assertEquals(s, "id is empty");
+	}
 
 	/**
 	 * 문자열로 받은 메타데이터를 정확히 해석하는가?

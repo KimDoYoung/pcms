@@ -59,7 +59,6 @@ public class MBoardTest {
 			sqlString = sg.createTable(metaData);
 			DatabaseManager.getInstance().getSqlExecutor(databaseName).executeDirect(sqlString);
 			System.out.println("create table :" + metaData.getId());
-			
 		}		
 	}
 

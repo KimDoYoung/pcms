@@ -9,6 +9,8 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import kr.dcos.common.utils.StrUtils;
+
 /**
  * MBoard의 메타데이터
  * 
@@ -298,6 +300,40 @@ public class MetaData {
 		}
 		sb.append("fields$").append("\n");
 		return sb.toString();
+	}
+
+	/**
+	 * 올바른 메타데이터 인지 체크한다. <br>
+	 * 올바른 메타데이터라면 "OK" 를 리턴한다. <br>
+	 * 올바르지 않은 메타데이터라면 에러문자열을 리턴한다. <br>
+	 * @return 문자열 성공시 "OK", 실패시 "\n"으로 분리가능한 에러 문자열들
+	 */
+	public String validCheck() {
+		StringBuilder sb = new StringBuilder();
+		if(StrUtils.isEmpty(id)){
+			sb.append("id is empty").append("\n");
+		}
+		if(StrUtils.isEmpty(name)){
+			sb.append("name is empty").append("\n");
+		}
+		if(StrUtils.isEmpty(boardType)){
+			sb.append("boardType is empty").append("\n");
+		}
+		if(StrUtils.isEmpty(dataSourceId)){
+			sb.append("dataSourceId is empty").append("\n");
+		}
+		if(StrUtils.isEmpty(dataSourceType)){
+			sb.append("dataSourceType is empty").append("\n");
+		}
+		if(fields.size() == 0){
+			sb.append("fields size is zero").append("\n");
+		}
+		String result = sb.toString();
+		if(result.length() == 0){
+			return "OK";
+		}else{
+			return result.substring(0, result.length()-1);
+		}
 	}
 
 

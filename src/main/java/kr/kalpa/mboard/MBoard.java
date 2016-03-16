@@ -1,6 +1,5 @@
 package kr.kalpa.mboard;
 
-import kr.dcos.common.sql.database.DatabaseManager;
 import kr.dcos.common.sql.exception.SqlExecutorException;
 
 /**
@@ -23,7 +22,9 @@ public class MBoard {
 	 * @throws SqlExecutorException 
 	 */
 	public void createBoard() throws SqlExecutorException{
-
+		//1 create table
+		
+		//2 
 	}
 	/**
 	 * 새로운 메타데이터를 바탕으로 게시판을 수정한다. <br>
