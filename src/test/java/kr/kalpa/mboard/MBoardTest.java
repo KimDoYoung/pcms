@@ -12,7 +12,9 @@ import org.junit.Test;
 
 import kr.dcos.common.sql.database.DatabaseManager;
 import kr.dcos.common.sql.exception.SqlExecutorException;
+import kr.dcos.common.utils.table.TableException;
 import kr.kalpa.db.sql.SqlFactory;
+import kr.kalpa.db.sql.SqlGenerator;
 
 public class MBoardTest {
 
@@ -38,18 +40,27 @@ public class MBoardTest {
 		System.out.println(mBoard.toString());
 	}
 	@Test
-	public void testCreateBoard() throws SqlExecutorException, MBoardException{
+	public void testCreateBoard() throws SqlExecutorException, MBoardException, TableException{
 		MBoard mBoard = new MBoard(new MetaData(metaString));
 		//mBoard.createBoard();
 		MetaData metaData = mBoard.getMetaData();
 		if(metaData.getDataSourceType().equals("database")){
 			String databaseName = metaData.getDataSourceId();
-			 
-			String sqlString = SqlFactory.getSqlGenerator(databaseName).createTable(metaData);
+			SqlGenerator sg = SqlFactory.getSqlGenerator(databaseName);
+			assertNotNull(sg);
+			String sqlString = sg.existTable(metaData.getId());
+			int i = (Integer)DatabaseManager.getInstance().getSqlExecutor(databaseName).scalarDirect(sqlString);
+			System.out.println("check exist or not table :" + metaData.getId());
+			if(i > 0){ // 있으면 지운다.
+				sqlString = sg.dropTable(metaData.getId());
+				DatabaseManager.getInstance().getSqlExecutor(databaseName).executeDirect(sqlString);
+				System.out.println("drop table :" + metaData.getId());
+			}
+			sqlString = sg.createTable(metaData);
 			DatabaseManager.getInstance().getSqlExecutor(databaseName).executeDirect(sqlString);
+			System.out.println("create table :" + metaData.getId());
 			
 		}		
-
 	}
 
 }

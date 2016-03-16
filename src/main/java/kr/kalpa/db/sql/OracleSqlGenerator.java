@@ -22,7 +22,8 @@ public class OracleSqlGenerator extends SqlGeneratorBase implements SqlGenerator
 			String s = String.format("\t%s %s %s,\n", field.id.toLowerCase(), dataType, strNull);
 			sb.append(s);
 		}
-		sb.append(String.format("\tsys_id NUMBER(10) NOT NULL,\n"));
+		sb.append(String.format("\tsys_id VARCHAR(32) NOT NULL,\n"));
+		sb.append(String.format("\tsys_dt TIMESTAMP  DEFAULT SYSDATE,\n"));
 		sb.append(String.format("\tCONSTRAINT %s_pk PRIMARY KEY (sys_id)\n",metaData.getId().toLowerCase()));
 		sb.append(")");
 		return sb.toString();
@@ -30,6 +31,14 @@ public class OracleSqlGenerator extends SqlGeneratorBase implements SqlGenerator
 	@Override
 	public String dropTable(String tableName) {
 		return "DROP TABLE " + tableName.toLowerCase();
+	}
+
+	/**
+	 * 테이블이 존재하면 1 없으면 0을 리턴한다.
+	 */
+	@Override
+	public String existTable(String tableName) {
+		return "SELECT count(*) FROM all_tables WHERE table_name = '" + tableName.toUpperCase() + "'";
 	}
 
 }

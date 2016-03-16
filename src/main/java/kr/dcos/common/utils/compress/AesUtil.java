@@ -9,6 +9,7 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -222,4 +223,7 @@ public class AesUtil {
 		return SHA;
 	}
 	
+	public static String uuid(){
+		return UUID.randomUUID().toString().replace("-", "");
+	}
 }
