@@ -57,13 +57,5 @@ public class MiscTest {
 			return false;
 		}
 	}
-	@Test @Ignore
-	public void test1() {
-		Integer i = 10;
-		Double d = 10.0;
-		assertTrue( (double)i == (double)d);
-		Object o = 10;
-		assertTrue((Integer)o == 10);
-		
-	}
+
 }

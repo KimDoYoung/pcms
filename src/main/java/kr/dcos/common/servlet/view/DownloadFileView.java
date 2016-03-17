@@ -13,9 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sun.net.www.MimeTable;
-
 import kr.dcos.common.servlet.Model;
+import sun.net.www.MimeTable;
 
 public class DownloadFileView implements View  {
 	private static Logger logger = LoggerFactory
@@ -40,6 +39,7 @@ public class DownloadFileView implements View  {
 	 * @param file
 	 * @return
 	 */
+	@SuppressWarnings("restriction")
 	public static String getMimeType(File file) {
 		MimeTable mt = MimeTable.getDefaultTable();
 		String mimeType = mt.getContentTypeFor(file.getName());
@@ -106,10 +106,6 @@ public class DownloadFileView implements View  {
 					logger.error("",e);
 				}
 			}
-
 		}
-		
 	}
-
-
 }

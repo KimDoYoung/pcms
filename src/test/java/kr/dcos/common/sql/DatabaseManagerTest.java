@@ -1,5 +1,6 @@
 package kr.dcos.common.sql;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -9,10 +10,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import kr.dcos.common.sql.database.Database;
 import kr.dcos.common.sql.database.DatabaseManager;
 import kr.dcos.common.sql.exception.SqlExecutorException;
 import kr.dcos.common.sql.exception.SqlPickerException;
 import kr.dcos.common.utils.table.TableException;
+import kr.kalpa.db.DbType;
 
 public class DatabaseManagerTest {
 
@@ -28,6 +31,12 @@ public class DatabaseManagerTest {
 	public void tearDown() throws Exception {
 	}
 
+	@Test
+	public void testLoad() throws SqlExecutorException{
+		Database database = DatabaseManager.getInstance().getDatabase("oracle");
+		assertNotNull(database);
+		assertEquals(database.getBasicInfo().getDbType(), DbType.Oracle);
+	}
 	/**
 	 * Select for oracle 
 	 * @throws SqlExecutorException

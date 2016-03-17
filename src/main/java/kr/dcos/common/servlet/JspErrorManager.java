@@ -11,6 +11,14 @@ import java.util.List;
  *    for(int i=0;i<boardManager.error.size();i++){ <br>
  *    	display(boardManager.error.get(i)); <br>
  *    } <br>
+ * <c:if test="${errorManager.hasError }" >
+ * <ul>
+ * <c:forEach var="err" items="${errorManager.list }">
+ * 	<li> ${err } </li>
+ * </c:forEach>
+ * </ul>
+ * </c:if>	
+ *    
  * </pre>
  *    
  * @author Kim Do Young

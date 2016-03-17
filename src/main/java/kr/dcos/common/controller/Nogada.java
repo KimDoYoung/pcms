@@ -29,7 +29,7 @@ public class Nogada {
 	}
 	@ControllerMethod
 	public ForwardInfo error(RequestInfo requestInfo) throws Throwable{
-		ForwardInfo fi = new ForwardInfo("/common/cms_error.jsp");
+		ForwardInfo fi = new ForwardInfo("/common/error.jsp");
 		String errorMessage = requestInfo.getErrorMessage();
 		logger.debug("errorMessage:" + errorMessage);
 		fi.addErrorMessage("dispatcher", errorMessage);

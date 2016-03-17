@@ -13,7 +13,7 @@ import kr.dcos.common.sql.JdbcTable;
 import kr.dcos.common.sql.SqlParam;
 import kr.dcos.common.utils.DateUtil;
 import kr.kalpa.config.SessionInfo;
-import kr.kalpa.service.DbService;
+import kr.kalpa.service.DatabaseService;
 
 public class LoginController {
 	private static Logger logger = LoggerFactory.getLogger(LoginController.class);
@@ -40,7 +40,7 @@ public class LoginController {
 		try {
 			SqlParam param = new SqlParam();
 			param.put("id", id);
-			DbService service  = new DbService();
+			DatabaseService service  = new DatabaseService();
 			JdbcTable table = service.select("getWebUser", param);
 			if(table.getRowSize() == 0){
 				forwardInfo.setAttribute("msg", "id is not valid" );
@@ -80,7 +80,7 @@ public class LoginController {
 			forwardInfo.setPath("/index.jsp");
 			return forwardInfo;
 		} catch (Exception e) {
-			forwardInfo.setPath("/common/cms_error.jsp");
+			forwardInfo.setPath("/common/error.jsp");
 			forwardInfo.addErrorMessage("dbError", e.getMessage());
 			logger.error("", e);
 			return forwardInfo;
@@ -101,7 +101,7 @@ public class LoginController {
 			SessionInfo sessionInfo = (SessionInfo)session.getAttribute(sessionId);
 			//ForwardInfo forwardInfo = new ForwardInfo("/common/login.jsp");
 			ForwardInfo forwardInfo = new ForwardInfo("/index.jsp");
-			DbService service  = new DbService();
+			DatabaseService service  = new DatabaseService();
 			SqlParam param = new SqlParam();
 			param.put("id", sessionInfo.get("id"));
 			service.update("webuser.lougout", param );
@@ -113,7 +113,7 @@ public class LoginController {
 			return forwardInfo;
 		}catch(Exception e){
 			logger.error("",e);
-			ForwardInfo forwardInfo = new ForwardInfo("/common/cms_error.jsp");
+			ForwardInfo forwardInfo = new ForwardInfo("/common/error.jsp");
 			forwardInfo.addErrorMessage("unknown", "unknown error occurred in logout process");
 			return forwardInfo;
 		}

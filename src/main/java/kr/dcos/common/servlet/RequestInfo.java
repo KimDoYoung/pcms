@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -39,7 +39,9 @@ public class RequestInfo {
 	
 	private static Logger logger = LoggerFactory.getLogger(RequestInfo.class);
 	
-
+	// 서블릿 컨텍스트 
+	private ServletContext servletContext;
+	
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 
@@ -51,9 +53,7 @@ public class RequestInfo {
 
 	private MultipartFormData multipartFormData=null;
 
-	//
-	// constructor
-	//
+	//TODO upload path를 감출것
 	public RequestInfo(HttpServletRequest request,HttpServletResponse response,HttpMethod httpMethod){
 		this(request,response,httpMethod,"c:/temp/uploaded");
 	}
@@ -71,6 +71,12 @@ public class RequestInfo {
 	//
 	// getter , setter
 	//
+	public ServletContext getServletContext() {
+		return servletContext;
+	}
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext = servletContext;
+	}
 	public String getReturnUrl() {
 		return returnUrl;
 	}
@@ -426,7 +432,7 @@ public class RequestInfo {
 			return (T)b;
 			
 		}else{
-			logger.warn(type.toString() + " is unknown, change to string");
+			logger.warn(type.toString() + " is unknown, changed to string");
 			return (T)s;
 		}
 	}
@@ -552,27 +558,17 @@ public class RequestInfo {
 		}
 		return sc;
 	}
+	
 	/**
-	 * SessionInfo를 찾아서 리턴한다. 없다는 것은 login하지 않았다는 뜻
+	 * path의 절대패스를 구해서 리턴한다.
+	 * @param path
 	 * @return
 	 */
-//	public SessionInfo getSessionInfo() {
-//		SessionInfo sessionInfo = (SessionInfo) request.getAttribute("sessionInfo");
-//		return sessionInfo;
-//	}
-//
-//	public String getUploadFilePath() {
-//		return uploadFilePath;
-//	}
-//	public void setUploadFilePath(String uploadFilePath) {
-//		this.uploadFilePath = uploadFilePath;
-//	}
-//	//repositry
-//	public void setRepository(Repository repository) {
-//		this.repository = repository; 
-//	}
-//	public Repository getRepository(){
-//		return this.repository;
-//	}
-	
+	public String getRealPath(String path) {
+		return this.getServletContext().getRealPath(path);
+	}
+	@Override
+	public String toString(){
+		return "RequestInfo... who are you!";
+	}
 }

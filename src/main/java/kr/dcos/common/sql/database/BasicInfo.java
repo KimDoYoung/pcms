@@ -1,5 +1,7 @@
 package kr.dcos.common.sql.database;
 
+import kr.kalpa.db.DbType;
+
 /**
  * 데이터베이스 접속에 대한 기본정보 클래스
  * 
@@ -7,11 +9,17 @@ package kr.dcos.common.sql.database;
  *
  */
 public class BasicInfo {
+	private DbType dbType;
 	private String url;
 	private String userId;
 	private String password;
 
-
+	public DbType getDbType() {
+		return dbType;
+	}
+	public void setDbType(DbType dbType) {
+		this.dbType = dbType;
+	}
 	public String getUrl() {
 		return url;
 	}

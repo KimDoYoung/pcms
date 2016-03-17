@@ -203,6 +203,7 @@ public class CmsDispatcherAd extends HttpServlet {
 			logger.error("requestURI:" + request.getRequestURI()+" command is null");
 		}
 		RequestInfo requestInfo = new RequestInfo(request, response,method,tempDir);
+		requestInfo.setServletContext(this.getServletContext());
 		//requestInfo.setRepository(repository);
 		CmsMvcMethodInfo methodInfo = methodTable.get(command);
 
@@ -238,15 +239,11 @@ public class CmsDispatcherAd extends HttpServlet {
 			}
 		}		
 		try {
-			//authoritylimitcontroller에만 methodTable의 내용을 넘긴다. yamae
-//			if( cmn.getControllerName().equalsIgnoreCase("authoritylimitcontroller") ||
-//			    cmn.getControllerName().equalsIgnoreCase("ControllerController") )
-//			{
-//				requestInfo.setAttribute("methodTable",methodTable.getControllerList());
-//			}
+
 			Object o = methodInfo.getMethod().invoke(requestInfo);
 			if(o==null){
-				;//???
+				//TODO common/error.jsp가 없으면 어떻게 하는가?
+				renderView("/common/error.jsp",request,response);
 			}else{
 				if(o instanceof String){
 					String jsp = (String)o;
@@ -264,7 +261,6 @@ public class CmsDispatcherAd extends HttpServlet {
 						view = viewResolver.resolve(fi.getPath());
 					}
 					renderView(view,model,request,response);
-					
 				}else{
 					renderView("/common/error.jsp",request,response);
 				}

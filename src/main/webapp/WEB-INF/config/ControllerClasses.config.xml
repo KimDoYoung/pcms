@@ -2,5 +2,6 @@
 <Cms-Suhaeng>
 	<classes>
 		<class alias="kalpa,dcos" session-check="N">kr.dcos.common.controller.Nogada</class>
+		<class session-check="N">kr.kalpa.controller.MBoardController</class>
 	</classes>
 </Cms-Suhaeng>
