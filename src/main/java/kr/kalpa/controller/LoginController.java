@@ -80,7 +80,7 @@ public class LoginController {
 			forwardInfo.setPath("/index.jsp");
 			return forwardInfo;
 		} catch (Exception e) {
-			forwardInfo.setPath("/common/cms_error.jsp");
+			forwardInfo.setPath("/common/error.jsp");
 			forwardInfo.addErrorMessage("dbError", e.getMessage());
 			logger.error("", e);
 			return forwardInfo;
@@ -113,7 +113,7 @@ public class LoginController {
 			return forwardInfo;
 		}catch(Exception e){
 			logger.error("",e);
-			ForwardInfo forwardInfo = new ForwardInfo("/common/cms_error.jsp");
+			ForwardInfo forwardInfo = new ForwardInfo("/common/error.jsp");
 			forwardInfo.addErrorMessage("unknown", "unknown error occurred in logout process");
 			return forwardInfo;
 		}

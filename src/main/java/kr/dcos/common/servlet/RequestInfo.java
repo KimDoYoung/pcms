@@ -558,7 +558,15 @@ public class RequestInfo {
 		}
 		return sc;
 	}
-
+	
+	/**
+	 * path의 절대패스를 구해서 리턴한다.
+	 * @param path
+	 * @return
+	 */
+	public String getRealPath(String path) {
+		return this.getServletContext().getRealPath(path);
+	}
 	@Override
 	public String toString(){
 		return "RequestInfo... who are you!";

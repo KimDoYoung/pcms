@@ -1,0 +1,25 @@
+#---------------------------------------------
+# 게시판 자동생성을 위한 메타데이터
+#---------------------------------------------
+$dataSourceType:database
+$dataSourceId : oracle
+$id: movies
+$name:영화목록 
+$type : borad1 
+$desc:
+	 수집한 영화 목록들
+	sosoosofowwof
+	sofoososoeofw
+desc$
+
+$fields:
+ id, 아이디, string, 10, Y
+ hname, 한글 제목, string, 200, N
+ ename, 영어 제목, string, 200, N
+ year, 제작년도, string, 4, N
+ country, 제작국가, string, 10,N
+ jumsu, 점수, int,0,N
+ cost, 가격, number, 10.2,N
+ upd_dt, 입력일시, date, 0,N
+fields$
+#-------------------------------------

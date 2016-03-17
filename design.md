@@ -28,3 +28,7 @@ MBoard가 여러개의 클래스별로 분배해 주는 역활을 한다.
 - desc : 짧은 설명
 - fields : 관리할 데이터 항목들 
 	- id , title, datatype, size, 필수여부
+
+#MetaData를 저장
+
+#JSP의 생성 및 저장

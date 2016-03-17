@@ -27,7 +27,6 @@ import kr.dcos.common.utils.ValueText;
  * 
  */
 public class ForwardInfo {
-	//private final static String ErrorPage = "/common/cms_error.jsp";
 	private String ErrorPage;
 	private Model model;
 	private String path=null;

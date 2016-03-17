@@ -65,11 +65,34 @@ ${hong }
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-
+     <div class="col-md-8">
+         <header><h3>게시판 메타데이터</h3></header>
+         <div class="row">
+             <form id='form1' action="/MBoard.createBoard.cms" method="POST">
+             	 <input type='hidden' id='mode' name='mode' value='${mode }' />
+                 <textarea name="metadata" id="metadata" cols="70" rows="25">${metadata }</textarea>
+             </form>
+         </div>
+         <footer>
+         <div>
+			<c:if test="${errorManager.hasError }" >
+			<ul>
+			<c:forEach var="err" items="${errorManager.list }">
+				<li> ${err } </li>
+			</c:forEach>
+			</ul>
+			</c:if>         
+         </div>
+         <button type="button" class="btn btn-default" aria-label="Center Align" id="btnSave">생성</button>
+         </footer>
+     </div>
 </body>
 <script>
 $( document ).ready(function() {
-    console.log('ready....');
+    $('#btnSave').on('click', function(){
+    	console.log('submit...');
+    	$('#form1').submit();
+    });
 })
 </script>
 </html>
