@@ -30,7 +30,7 @@ public class MessageManager {
 	private ClassLoader loader = null;
 	private Locale[] locales = null;
 	private ResourceBundle bundle;
-	private boolean isLoad = false;
+	private boolean isLoaded = false;
 	
 	public static MessageManager getInstance() {
 		if (instance == null) {
@@ -52,15 +52,15 @@ public class MessageManager {
 	
 	public void load(String location) {
 		
-		if(isLoad && this.location.equals(location)) return;
+		if(isLoaded && this.location.equals(location)) return;
 		this.location = location;
-		this.isLoad = false;
+		this.isLoaded = false;
 		File file=null;
 		try {
 			file = new File(this.getClass().getResource(location).toURI());
 			URL[] urls = {file.toURI().toURL()};
 			loader = new URLClassLoader(urls);
-			isLoad = true;
+			isLoaded = true;
 		} catch (URISyntaxException e) {
 			logger.error(e.getMessage());
 		} catch (MalformedURLException e) {

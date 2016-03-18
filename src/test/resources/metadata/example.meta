@@ -1,26 +1,24 @@
 #
-# ê²Œì‹œíŒ ìë™ìƒì„±ì„ ìœ„í•œ ë©”íƒ€ë°ì´í„°
+# °Ô½ÃÆÇ ÀÚµ¿»ı¼ºÀ» À§ÇÑ ¸ŞÅ¸µ¥ÀÌÅÍ
 #
 $dataSourceType:database
 $dataSourceId : oracle
 $id: movies
-$name:ì˜í™”ëª©ë¡ 
+$name:¿µÈ­¸ñ·Ï 
 $type : borad1 
 $desc:
-	 ìˆ˜ì§‘í•œ ì˜í™” ëª©ë¡ë“¤
+	 ¼öÁıÇÑ ¿µÈ­ ¸ñ·Ïµé
 	sosoosofowwof
 	sofoososoeofw
 desc$
 
 $fields:
- id, ì•„ì´ë””, string, 10, Y
- hname, í•œê¸€ ì œëª©, string, 200, N
- ename, ì˜ì–´ ì œëª©, string, 200, N
- year, ì œì‘ë…„ë„, string, 4, N
- country, ì œì‘êµ­ê°€, string, 10,N
- jumsu, ì ìˆ˜, int,0,N
- cost, ê°€ê²©, number, 10.2,N
- upd_dt, ì…ë ¥ì¼ì‹œ, date, 0,N
+ id, ¾ÆÀÌµğ, string, 10, Y
+ hname, ÇÑ±Û Á¦¸ñ, string, 200, N
+ ename, ¿µ¾î Á¦¸ñ, string, 200, N
+ year, Á¦ÀÛ³âµµ, string, 4, N
+ country, Á¦ÀÛ±¹°¡, string, 10,N
+ jumsu, Á¡¼ö, int,0,N
+ cost, °¡°İ, number, 10.2,N
+ upd_dt, ÀÔ·ÂÀÏ½Ã, date, 0,N
 fields$
-
-
