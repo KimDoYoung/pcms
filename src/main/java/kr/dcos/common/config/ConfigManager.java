@@ -70,6 +70,16 @@ public class ConfigManager {
 	public String get(String key){
 		return prop.getProperty(key);
 	}
+
+
+	public Properties getConfig() {
+		return prop;
+	}
+
+	public int getInteger(String strInteger) {
+		return ConvertUtil.toInteger(strInteger);
+	}
+	
 	@Override
 	public String toString() {
 		Enumeration<Object> keys = prop.keys();
@@ -85,13 +95,4 @@ public class ConfigManager {
 		}
 		return sb.toString();
     }
-
-	public Properties getConfig() {
-		return prop;
-	}
-
-	public int getInteger(String strInteger) {
-		return ConvertUtil.toInteger(strInteger);
-	}
-
 }

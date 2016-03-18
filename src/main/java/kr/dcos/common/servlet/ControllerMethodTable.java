@@ -34,8 +34,7 @@ import org.xml.sax.SAXException;
  */
 public class ControllerMethodTable {
 	
-	private static Logger logger = LoggerFactory
-			.getLogger(ControllerMethodTable.class);
+	private static Logger logger = LoggerFactory.getLogger(ControllerMethodTable.class);
 	
 	public class ControllerInfo {
 		public String sessionCheck;
@@ -44,7 +43,6 @@ public class ControllerMethodTable {
 	}
 
 	private List<ControllerInfo> classNameList;
-	//private Map<String,  IControllerMethod> map;
 	private Map<String, CmsMvcMethodInfo> map;
 	
 	public ControllerMethodTable(){

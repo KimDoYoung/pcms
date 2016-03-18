@@ -1,7 +1,10 @@
 package kr.dcos.common.servlet;
-/*
+/**
  * command를 해석하기 위해서만들었음. <br>
  * domain의 controller와 다른 용도임 <br>
+ * 
+ * @author Kim Do Young
+ *
  */
 public class ControllerMethodName {
 	private String controllerName;

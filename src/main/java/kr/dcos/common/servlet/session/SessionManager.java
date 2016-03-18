@@ -7,8 +7,9 @@ import kr.dcos.common.servlet.ControllerMethodName;
 
 /**
  * 
- * 인증과 권한을 관리하는 클래스
- * for authentication and authorization 
+ * 인증과 권한을 관리하는 클래스<br>
+ * for authentication and authorization<br>
+ *  
  * @author Kim Do Young
  *
  */

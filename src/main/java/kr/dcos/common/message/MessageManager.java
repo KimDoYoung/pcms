@@ -15,9 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * CmsMessageManager is for display multi language 
- * with locale and keyword
- * using db
+ * CmsMessageManager is for display multi language <br> 
+ * with locale and keyword <br>
+ * using db <br>
+ * 데이터베이스를 사용하여 locale과 keyword로 다국어를 지원한다. <br>
+ * 
  * @author Kim Do Young
  *
  */
